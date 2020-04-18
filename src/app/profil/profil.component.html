@@ -1,0 +1,70 @@
+<div class="profil-page">
+<div *ngIf="!(zmenUdajeBoolean || zmenHesloBoolean)">
+<table>
+    <tr>
+      <th><label for="name" id="name" class="bold">Login:</label></th>
+      <td> <label for="name">{{user.name}}</label></td>
+    </tr>
+    <tr>
+      <th><label for="mail" id="mail" class="bold">E-mail:</label></th>
+      <td><label for="mail">{{user.mail}}  </label></td>
+    </tr>
+    <tr>
+      <th><label for="meno" class="bold">Meno:</label></th>
+      <td><label for="meno">{{user.meno}}  </label></td>
+    </tr>
+    <tr>
+      <th><label for="priezvisko" class="bold">Priezvisko :</label></th>
+      <td><label for="priezvisko">{{user.priezvisko}}  </label></td>
+    </tr>
+    <tr>
+      <th><label for="tel" class="bold">Telefon :</label></th>
+      <td><label for="tel">{{user.tel}}</label></td>
+    </tr>
+    <tr>
+      <th><label for="meno" class="bold">Adresa :</label></th>
+      <td><label for="adresa">{{user.adresa}}   </label></td>
+    </tr>
+  </table>
+
+  <br>
+    <button (click)="zmenaUdajov()" >Zmenit udaje</button>
+    <button (click)="zmenaHesla()">Zmenit heslo</button>
+    <button (click)="registraciaOrganizacie()">Registracia organizacie</button>
+  <br>
+  <p *ngIf="hesloSaZmenilo">Heslo bolo uspesne zmenene</p>
+</div>
+</div>
+
+<div class="zmena-hesla-page">
+<div *ngIf="zmenHesloBoolean">
+  <form (ngSubmit)="zmenHeslo(f)" #f="ngForm">
+
+
+        <input ngModel name="stareHeslo" type="password"  id="stareHeslo" placeholder="Stare heslo" required autofocus><br>
+        <input ngModel name="noveHeslo" type="password" id="noveHeslo" placeholder="Nove heslo" required>
+        <button name="submit" type="submit" value="Zmen Heslo">Change password</button>
+        <button (click)="spat()">Back</button>
+  </form>
+</div>
+</div>
+
+
+<div class="zmena-udajov-page">
+<div *ngIf="zmenUdajeBoolean">
+  <form  (ngSubmit)="resolve(f)" #f="ngForm">
+
+      <input ngModel="{{user.meno}}" name="meno" type="text" maxlength="50" id="meno">
+      <br>
+      <input ngModel="{{user.priezvisko}}" name="priezvisko" type="text"  maxlength="50" id="priezvisko" value="{{user.priezvisko}}">
+      <br>
+      <input ngModel="{{user.tel}}" type="tel" name="tel" id="tel" value="{{user.tel}}">
+      <br>
+      <input ngModel="{{user.adresa}}" name="adresa" type="text"  maxlength="50" id="adresa" value="{{user.adresa}}">
+      <br><br>
+       <button name="submit" type="submit" value="Uloz zmeny">Save changes</button>
+    <button (click)="spat2()">Back</button>
+
+  </form>
+</div>
+</div>

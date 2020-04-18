@@ -1,0 +1,13 @@
+<div class="login-page">
+  <div class="form">
+    <form (ngSubmit)="login(f)" #f="ngForm">
+      <input ngModel name="mail" type="email"  id="mail" placeholder="email" required autofocus><br>
+      <input ngModel name="heslo" type="password" id="heslo" placeholder="heslo" required>
+      <button name="submit" type="submit" value="Prihlásiť">login</button>
+      <p class="message">Not registered? <a (click)="signup()">Create an account</a></p>
+      <div *ngIf="zleHeslo">
+        <p>Zadané heslo je nesprávne</p>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,87 @@
+<div class="registracia-org-page">
+<form *ngIf="vytvorOrganizaciuBoolean" #f="ngForm" (ngSubmit)="pridajOrganizaciu(f)">
+  <fieldset>
+    <legend>Typ organizacie</legend>
+    <div>
+      <label class="radio">
+        <input id="sro" name="typOrganizacie" type="radio" [(ngModel)]="typOrganizacie" value="sro" >
+        <span for="sro">s.r.o.</span>
+      </label>
+      <label class="radio">
+        <input id="as" name="typOrganizacie" type="radio" [(ngModel)]="typOrganizacie" value="as">
+        <span for="as">a.s.</span>
+      </label>
+      <label class="radio">
+        <input id="vos" name="typOrganizacie" type="radio" [(ngModel)]="typOrganizacie" value="vos">
+        <span for="vos">v.o.s.</span>
+      </label>
+      <label class="radio">
+        <input id="ks" name="typOrganizacie" type="radio" [(ngModel)]="typOrganizacie" value="ks">
+        <span for="ks">k.s.</span>
+      </label>
+      <label class="radio">
+        <input id="nc" name="typOrganizacie" type="radio" [(ngModel)]="typOrganizacie" value="iné">
+        <span for="nc">Niečo iné</span>
+      </label>
+    </div>
+  </fieldset>
+<div class="udaje">
+  <fieldset>
+    <legend>Informacie o organizacii</legend>
+
+    <input ngModel name="nazovOrganizacie" type="text"  id="nazovOrganizacie" placeholder="Názov" required autofocus><br>
+    <input ngModel type="text" id="icoOrganizacie" name="icoOrganizacie" placeholder="IČO"><br>
+    <input ngModel type="text" id="sidloOrganizacie" name="sidloOrganizacie" placeholder="Sidlo"><br>
+    <input ngModel type="text" name="webOrgnaizacie" id="webOrgnaizacie" placeholder="Webové sídlo">
+  </fieldset>
+  <button name="submit" type="submit" value="Pridaj organizaciu">Pridaj organizaciu</button>
+  <button (click)="zrus()">Back</button>
+</div>
+</form>
+</div>
+
+
+
+
+
+<div class="pridaj-uzivatelov-page">
+<table *ngIf="pridajUzivatelovBoolean">
+  <tr>
+    <th colspan="3">Členovia organizácie</th>
+  </tr>
+  <tr>
+    <th>Osoba</th>
+    <th>Funkcia</th>
+    <th>Akcia</th>
+  </tr>
+  <tr *ngFor="let person of clenoviaOrganizacieList">
+    <td>{{person.name}}</td>
+    <td>{{person.pozicia}}</td>
+    <td>
+      <button (click)="vymaz(person)">Vymaz</button>
+    </td>
+  </tr>
+</table>
+
+<table *ngIf="pridajUzivatelovBoolean">
+  <tr>
+    <th colspan="4">Osoby, ktoré sa dajú pridať</th>
+  </tr>
+  <tr>
+    <th>#</th>
+    <th>Osoba</th>
+    <th>Mail</th>
+    <th>Akcie</th>
+  </tr>
+  <tr *ngFor="let person of allPeople">
+    <td>{{allPeople.indexOf(person)}}</td>
+    <td>{{person.val().name}}</td>
+    <td>{{person.val().mail}}</td>
+    <td>
+      <button (click)="addPerson(person, 'owner')">Vlastník</button>
+      <button (click)="addPerson(person, 'member')">Člen</button>
+    </td>
+  </tr>
+</table>
+<button *ngIf="pridajUzivatelovBoolean" (click)="back()">Späť na profil</button>
+</div>

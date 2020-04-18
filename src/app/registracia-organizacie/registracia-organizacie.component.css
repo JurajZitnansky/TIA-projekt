@@ -1,0 +1,93 @@
+.registracia-org-page {
+  width: 360px;
+  padding: 8% 0 0;
+  margin: auto;
+}
+.radio {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+.radio span{
+  padding-left: 15px;
+}
+.udaje input {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+.udaje button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4CAF50;
+  width: 100%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+.udaje button:hover,.udaje button:active,.udaje button:focus {
+  background: #43A047;
+  color: black;
+}
+
+.pridaj-uzivatelov-page{
+  width: 460px;
+  padding: 8% 0 0;
+  margin: auto;
+}
+
+.pridaj-uzivatelov-page table{
+  width: 100%;
+  border : solid black 1px;
+}
+
+.pridaj-uzivatelov-page table td {
+  text-align: center;
+}
+
+.pridaj-uzivatelov-page table th {
+  border-bottom: solid black 1px;
+}
+
+.pridaj-uzivatelov-page table button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4CAF50;
+  width: 50%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+
+.pridaj-uzivatelov-page button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4CAF50;
+  width: 100%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}

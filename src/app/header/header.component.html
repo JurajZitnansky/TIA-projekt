@@ -1,0 +1,10 @@
+<div class="topnav">
+  <button *ngIf="userLoggedIn" (click)="logout()">Log out</button>
+  <a *ngIf="userLoggedIn" routerLink="profil">Profil</a>
+  <a *ngIf="userLoggedIn" routerLink="home">Home</a>
+
+  <a *ngIf="!userLoggedIn" routerLink="signup">Sign up</a>
+  <a *ngIf="!userLoggedIn" routerLink="login">Log in</a>
+
+</div>
+

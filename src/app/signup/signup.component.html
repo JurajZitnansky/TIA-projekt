@@ -1,0 +1,28 @@
+<div class="register-page">
+  <div class="form">
+    <form (ngSubmit)="register(f)" #f="ngForm">
+      <fieldset>
+        <legend>Povinne</legend>
+      <input ngModel name="login" type="text"  id="login" placeholder="Login" autofocus><br>
+      <input ngModel name="mail" type="email"  id="mail" placeholder="Email" required pattern="^[a-zA-Z0-9\._]{2,}@[a-zA-Z0-9\._]{1,}$"><br>
+      <input ngModel name="heslo" type="password" id="heslo" placeholder="Heslo" required>
+        </fieldset>
+      <fieldset>
+        <legend>Nepovinne</legend>
+        <input ngModel name="meno" type="text" id="meno" placeholder="Meno"><br>
+        <input ngModel name="priezvisko" type="text" id="priezvisko" placeholder="Priezvisko"><br>
+        <input ngModel type="tel" name="tel" id="tel" placeholder="Tel.č."><br>
+        <input ngModel name="adresa" type="text" id="adresa" placeholder="Adresa"><br>
+      </fieldset>
+      <button name="submit" type="submit" value="Registrovať">register</button>
+      <p class="message">Already registered? <a href="login">Sign in</a></p>
+      <div *ngIf="zlyEmail">
+        <p>Zadaný email je zlý</p>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="userRegistered">
+  Uspesne zaregistrovany, prihlaste sa
+</div>
