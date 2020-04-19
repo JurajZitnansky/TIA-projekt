@@ -4,6 +4,7 @@ import * as firebase from 'firebase';
 import {Router} from "@angular/router";
 
 
+
 @Component({
   selector: 'app-registracia-organizacie',
   templateUrl: './registracia-organizacie.component.html',
@@ -27,18 +28,35 @@ export class RegistraciaOrganizacieComponent implements OnInit {
 
 
 
-  pridajOrganizaciu(f : NgForm){
+  pridajOrganizaciu(f : NgForm) {
     let ownerUid = JSON.parse(localStorage.getItem('user')).uid;
     let idOrganizacie = firebase.database().ref('organizacie').push(f.value).key;
     this.idOrganicie = idOrganizacie;
-    firebase.database().ref('users/' + ownerUid + '/organizacie')
-      .update({[idOrganizacie] : "owner"})
-      .then(()=>{
-        this.pridajUzivatelovDoOrganizacie(ownerUid, idOrganizacie);
-      })
-      .catch((error)=>{console.log(error.message)});
-  }
+    console.log('som tuuuuu');
+    firebase.database().ref('organizacie')
+      .once("value", (orgData) => {
+        const orgDATA = {
+          'funkcia': 'owner',
+          'nazovOrganizacie': orgData.child(idOrganizacie).val().nazovOrganizacie,
+        }
+        const vytvorenaOrg = {
+          'uidOrganizacue' : idOrganizacie,
+          'typOrganizacie': orgData.child(idOrganizacie).val().typOrganizacie,
+          'nazovOrg': orgData.child(idOrganizacie).val().nazovOrganizacie,
+          'icoOrganizacie': orgData.child(idOrganizacie).val().icoOrganizacie,
+          'sidloOrganizacie': orgData.child(idOrganizacie).val().sidloOrganizacie,
+          'webOrgnaizacie': orgData.child(idOrganizacie).val().webOrgnaizacie,
+        }
+        localStorage.setItem('vytvorenaOrg', JSON.stringify(vytvorenaOrg));
+        firebase.database().ref('users/' + ownerUid + '/organizacie')
+          .update({[idOrganizacie] : orgDATA})
+          .then(() => {
+            this.pridajUzivatelovDoOrganizacie(ownerUid, idOrganizacie);
+          })
+          .catch((error) => {console.log(error.message)});
+          });
 
+  }
   pridajUzivatelovDoOrganizacie(uid, idOrganizacie){
     firebase.database().ref('organizacie/' + idOrganizacie + '/clenovia')
       .set({[uid] : "owner" })
@@ -79,38 +97,36 @@ export class RegistraciaOrganizacieComponent implements OnInit {
   }
 
   addPerson(person, str){
+    const udaje = {
+      'funkcia': str,
+      'nazovOrganizacie': JSON.parse(localStorage.getItem('vytvorenaOrg')).nazovOrg,
+    };
     firebase.database().ref('users/' + person.key + '/organizacie')
       .update({
-        [this.idOrganicie] : str
-      })
-      .then(()=>{
-        firebase.database().ref('organizacie/' + this.idOrganicie + '/clenovia')
-          .update({
-            [person.key] : str
-          })
+        [this.idOrganicie] : udaje
+      });
+    firebase.database().ref('organizacie/' + this.idOrganicie + '/clenovia')
+      .update({
+        [person.key] : str
       });
     this.naplnAllPeople();
     this.naplnClenovOrganizacie();
   }
 
-  vymaz(person){
+  vymaz(person) {
     firebase.database().ref('users/' + person.uid + '/organizacie/' + this.idOrganicie)
-      .remove()
-      .then(()=>{
-        firebase.database().ref('organizacie/' + this.idOrganicie + '/clenovia/' + person.uid)
-          .remove()
-          .then(()=>{
-            this.naplnAllPeople();
-            this.naplnClenovOrganizacie();
-          })
-      })
+      .remove();
+    firebase.database().ref('organizacie/' + this.idOrganicie + '/clenovia/' + person.uid)
+      .remove();
+    this.naplnAllPeople();
+    this.naplnClenovOrganizacie();
   }
 
-
-  back(){
+  back() {
     this.router.navigate(['profil', ]);
+    localStorage.removeItem('vytvorenaOrg');
   }
-  zrus(){
+  zrus() {
     this.router.navigate(['profil',]);
   }
 }

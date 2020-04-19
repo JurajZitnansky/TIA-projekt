@@ -1,2 +1,68 @@
-<p>Tuto to ešte nie je hotové</p>
+<div *ngIf="!organizaciaBooelean" class="home-page">
+  <div class="acc-kontainer">
 
+      <input type="radio" name="acc" id="acc1" checked>
+      <label for="acc1"> Organizácie</label>
+      <div class="acc-body">
+        <table>
+          <tr *ngFor="let organizacia of org">
+            <td>
+              <button (click)="orgUdaje(organizacia)">{{organizacia}}</button>
+            </td>
+          </tr>
+        </table>
+
+    </div>
+    <div>
+      <input type="radio" name="acc" id="acc2">
+      <label for="acc2"> Stretnutia</label>
+      <div class="acc-body">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="organizaciaBooelean" class="home-org-page">
+  <table class="tabulka-udaje">
+    <tr>
+      <th><label for="nazovOrganizacie" id="nazovOrganizacie" class="bold">Názov organizácie :</label></th>
+      <td><label for="nazovOrganizacie">{{organizaciaUdaje.nazovOrganizacie}}  </label></td>
+    </tr>
+    <tr>
+      <th><label for="icoOrganizacie" id="icoOrganizacie"class="bold">Ičo organizácie :</label></th>
+      <td><label for="icoOrganizacie">{{organizaciaUdaje.icoOrganizacie}}  </label></td>
+    </tr>
+    <tr>
+      <th><label for="sídloOrganizacie" id="sídloOrganizacie" class="bold">Sídlo organizácie :</label></th>
+      <td><label for="sídloOrganizacie">{{organizaciaUdaje.sidloOrganizacie}}   </label></td>
+    </tr>
+    <tr>
+      <th><label for="webOrganizacie" id="webOrganizacie" class="bold">Web organizácie :</label></th>
+      <td><label for="webOrganizacie">{{organizaciaUdaje.webOrgnaizacie}}   </label></td>
+    </tr>
+    <tr>
+      <th><label for="typOrganizacie" id="typOrganizacie" class="bold">Typ organizacie :</label></th>
+      <td><label for="typOrganizacie">{{organizaciaUdaje.typOrganizacie}}   </label></td>
+    </tr>
+  </table>
+
+<div class="orgclenovia">
+    <table class="členovia">
+      <tr>
+        <th colspan="3">Členovia organizácie</th>
+      </tr>
+      <tr>
+        <th>Osoba</th>
+        <th>E-mail</th>
+        <th>Funkcia</th>
+      </tr>
+      <tr *ngFor="let person of allPeople">
+        <td>{{person.name}}</td>
+        <td>{{person.mail}}</td>
+        <td>{{person.pozicia}}</td>
+      </tr>
+    </table>
+  <button>Stretnutia</button>
+  <button (click)="spat()">Späť</button>
+</div>
+</div>

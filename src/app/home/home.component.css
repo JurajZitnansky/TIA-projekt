@@ -1,0 +1,135 @@
+.home-page{
+  width: 360px;
+  padding: 8% 0 0;
+  margin: auto;
+}
+.acc-kontainer {
+  position: relative;
+  z-index: 1;
+  background: #FFFFFF;
+  max-width: 360px;
+  margin: 0 auto 100px;
+  padding: 45px;
+  text-align: center;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+.home-page label {
+  background-color: black;
+  color: #FFFFFF;
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  font-size: 14px;
+  text-align: center;
+}
+.acc-kontainer .acc-body {
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+  transition: 0.5s;
+}
+
+.acc-kontainer label {
+  cursor: pointer;
+  display: block;
+  padding: 15px;
+  box-sizing: border-box;
+  z-index: 100;
+}
+
+.acc-kontainer input{
+  display: none;
+}
+
+.acc-kontainer input:not(:checked)~.acc-body {
+  height: auto;
+  font-size: 16px;
+  padding: 20px;
+  transition: 0.5s;
+  display: none;
+}
+
+.acc-kontainer table{
+  width: 100%;
+}
+
+.acc-kontainer table td {
+  text-align: center;
+}
+
+.acc-kontainer table button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4CAF50;
+  width: 100%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+
+
+.tabulka-udaje {
+  font-family: "Roboto", sans-serif;
+  padding: 8% 0 0;
+  margin: auto;
+
+}
+
+.tabulka-udaje th {
+  border-style: solid;
+  text-align: left;
+  background: #4CAF50;
+}
+.tabulka-udaje td {
+  border-style: solid;
+  text-align: center;
+}
+.tabulka-udaje th label {
+  padding: 14px 16px;
+}
+.tabulka-udaje td label {
+  padding: 14px 16px;
+}
+
+.home-org-page{
+  width: 360px;
+  padding: 8% 0 0;
+  margin: auto;
+}
+
+.orgclenovia {
+  font-family: "Roboto", sans-serif;
+  padding: 8% 0 0;
+  margin: auto;
+}
+
+.členovia{
+  width: 100%;
+  border-style: solid;
+}
+
+.členovia  td {
+  text-align: center;
+}
+.členovia  th {
+  border-bottom: solid black 1px;
+}
+
+.orgclenovia button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4CAF50;
+  width: 50%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
