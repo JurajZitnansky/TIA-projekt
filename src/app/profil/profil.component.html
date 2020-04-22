@@ -33,6 +33,15 @@
     <button (click)="registraciaOrganizacie()">Registracia organizacie</button>
   <br>
   <p *ngIf="hesloSaZmenilo">Heslo bolo uspesne zmenene</p>
+<div *ngIf="!(klikolZrus)" class = "zrusenie-uctu">
+  <button (click)="zrusUcet()">Zruš účet</button>
+</div>
+  <div *ngIf="klikolZrus" class ="zrusenie-uctu">
+  <p *ngIf="jedinyOwner">V niektorej z organizácií ste jediným ownerom, ak zrušíte účet, organizácia sa zruší</p>
+  <p>Naozaj chcete zrušiť účet?</p>
+  <button (click)="ano()">Áno</button>
+  <button (click)="nie()">Nie</button>
+</div>
 </div>
 </div>
 

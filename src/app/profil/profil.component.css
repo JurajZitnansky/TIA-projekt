@@ -50,6 +50,21 @@ button:hover,.form button:active,.form button:focus {
   color: black;
 }
 
+.zrusenie-uctu button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: black;
+  width: 100%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+
 .zmena-hesla-page {
   width: 360px;
   padding: 8% 0 0;
@@ -76,6 +91,23 @@ form input {
   padding: 15px;
   box-sizing: border-box;
   font-size: 14px;
+}
+
+.profil-page p {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: crimson;
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  color: #FFFFFF;
+  font-size: 14px;
+  text-align: center;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
 }
 
 

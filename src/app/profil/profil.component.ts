@@ -14,6 +14,8 @@ export class ProfilComponent implements OnInit {
   zmenUdajeBoolean : boolean;
   zmenHesloBoolean : boolean;
   hesloSaZmenilo : boolean;
+  jedinyOwner : boolean;
+  klikolZrus: boolean;
 
 
   constructor(private router : Router) {
@@ -21,21 +23,32 @@ export class ProfilComponent implements OnInit {
     this.zmenUdajeBoolean = false;
     this.zmenHesloBoolean = false;
     this.hesloSaZmenilo = false;
+    this.jedinyOwner = false;
+    this.klikolZrus = false;
   }
 
   ngOnInit() {
+    this.overOdkialIdem();
     this.resolveUser();
   }
 
   zmenaUdajov(){
     this.zmenUdajeBoolean = true;
+    this.klikolZrus = false;
+  }
+  overOdkialIdem() {
+    if (JSON.parse(localStorage.getItem('org')) !== null) {
+      localStorage.removeItem('org');
+    }
   }
 
   spat(){
     this.zmenHesloBoolean = false;
+    this.klikolZrus = false;
   }
   spat2(){
     this.zmenUdajeBoolean = false;
+    this.klikolZrus = false;
   }
 
   zmenaHesla(){
@@ -51,6 +64,7 @@ export class ProfilComponent implements OnInit {
           .then(()=>{
             this.hesloSaZmenilo = true;
             this.zmenHesloBoolean = false;
+            this.klikolZrus = false;
           })
       })
       .catch((error)=> { console.log(error.message)})
@@ -79,4 +93,91 @@ export class ProfilComponent implements OnInit {
       })
       .catch((error)=>{ console.log(error.message)})
   }
+
+  overPocetOwnerov(idOrganizacie) {
+    let pocetOwnerovOrg = [];
+    firebase.database().ref('organizacie/' + idOrganizacie + '/clenovia')
+      .on('child_added', (orgFunkcie) => {
+        if (orgFunkcie.val() == 'owner') {
+          pocetOwnerovOrg.push(orgFunkcie.val());
+        }
+      });
+    if(pocetOwnerovOrg.length == 1){
+      this.jedinyOwner = true;
+    }
+    return pocetOwnerovOrg.length;
+  }
+
+  zrusUcet(){
+    this.klikolZrus = true;
+    this.jedinyOwner = false;
+    let userID = JSON.parse(localStorage.getItem('user')).uid;
+    firebase.database().ref('users/' + userID  + '/organizacie')
+      .on("child_added", (orgUdaje) =>{
+        if (orgUdaje.val().funkcia =='owner') {
+          let pocet = this.overPocetOwnerov(orgUdaje.key);
+         /* if (pocet === 1) {
+            this.jedinyOwner = true;
+          }*/
+          //console.log(pocet);
+        }
+    });
+
+  }
+
+  nie(){
+    this.klikolZrus = false;
+  }
+
+  vymazOrg(organizaciaUID) {
+    firebase.database().ref('users')
+      .on("child_added", (usersData) => {
+        firebase.database().ref('users/' + usersData.key + "/organizacie")
+          .on("child_added", (jehoUserData)=> {
+            if(jehoUserData.key === organizaciaUID) {
+              firebase.database().ref('users/' + usersData.key + '/organizacie/' + jehoUserData.key)
+                .remove();
+            }
+          });
+      });
+    firebase.database().ref('organizacie/' +  organizaciaUID )
+      .remove();
+  }
+
+  ano(){
+    let userID = JSON.parse(localStorage.getItem('user')).uid;
+    var user = firebase.auth().currentUser;
+    user.delete().then(function() {
+      // User deleted.
+    }).catch(function(error) {
+      // An error happened.
+    });
+     if(this.jedinyOwner == false){
+       firebase.database().ref('users/' + userID  + '/organizacie')
+         .on("child_added", (orgUdaje) => {
+           firebase.database().ref('organizacie/' + orgUdaje.key + '/clenovia/' + userID)
+             .remove()
+         });
+     } else {
+       firebase.database().ref('users/' + userID  + '/organizacie')
+         .on("child_added", (orgUdaje) => {
+           if (orgUdaje.val().funkcia =='owner') {
+             let pocet = this.overPocetOwnerov(orgUdaje.key);
+             if (pocet == 1 ){
+               this.vymazOrg(orgUdaje.key)
+             } else{
+               firebase.database().ref('users/' + userID  + '/organizacie')
+                 .on("child_added", (orgUdaje) => {
+                   firebase.database().ref('organizacie/' + orgUdaje.key + '/clenovia/' + userID)
+                     .remove()
+                 });
+             }
+           }
+         });
+     }
+     firebase.database().ref('users/' + userID)
+       .remove()
+    localStorage.removeItem('user');
+    this.router.navigate(['',]);
+   }
 }

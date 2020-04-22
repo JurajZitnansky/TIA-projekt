@@ -15,9 +15,12 @@
         <input ngModel name="adresa" type="text" id="adresa" placeholder="Adresa"><br>
       </fieldset>
       <button name="submit" type="submit" value="Registrovať">register</button>
-      <p class="message">Already registered? <a href="login">Sign in</a></p>
+      <p class="message">Already registered? <a (click)="login()">Sign in</a></p>
       <div *ngIf="zlyEmail">
         <p>Zadaný email je zlý</p>
+      </div>
+      <div *ngIf="nazovUserBoolean">
+        <p>Zadaný login sa už používa zvolte prosím iný</p>
       </div>
     </form>
   </div>

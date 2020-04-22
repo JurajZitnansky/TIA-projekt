@@ -5,8 +5,11 @@
       <input ngModel name="heslo" type="password" id="heslo" placeholder="heslo" required>
       <button name="submit" type="submit" value="Prihlásiť">login</button>
       <p class="message">Not registered? <a (click)="signup()">Create an account</a></p>
-      <div *ngIf="zleHeslo">
+      <div *ngIf="zleHeslo" class="zle-heslo/email">
         <p>Zadané heslo je nesprávne</p>
+      </div>
+      <div *ngIf="zlyEmail" class="zle-heslo/email">
+        <p>Zadaný email má zlý formát</p>
       </div>
     </form>
   </div>

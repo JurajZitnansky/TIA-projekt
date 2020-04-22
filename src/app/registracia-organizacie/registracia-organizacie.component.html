@@ -29,17 +29,21 @@
   <fieldset>
     <legend>Informacie o organizacii</legend>
 
-    <input ngModel name="nazovOrganizacie" type="text"  id="nazovOrganizacie" placeholder="Názov" required autofocus><br>
+    <input [(ngModel)]="nazovOrganizacie" name="nazovOrganizacie" type="text"  id="nazovOrganizacie" placeholder="Názov" required autofocus><br>
     <input ngModel type="text" id="icoOrganizacie" name="icoOrganizacie" placeholder="IČO"><br>
     <input ngModel type="text" id="sidloOrganizacie" name="sidloOrganizacie" placeholder="Sidlo"><br>
     <input ngModel type="text" name="webOrgnaizacie" id="webOrgnaizacie" placeholder="Webové sídlo">
   </fieldset>
   <button name="submit" type="submit" value="Pridaj organizaciu">Pridaj organizaciu</button>
   <button (click)="zrus()">Back</button>
+  <div *ngIf="nazovOrganizacieBoolean">
+    <p>Názov organizácie sa už používa, zvoľte iný</p>
+  </div>
 </div>
 </form>
-</div>
 
+
+</div>
 
 
 
@@ -63,25 +67,39 @@
   </tr>
 </table>
 
-<table *ngIf="pridajUzivatelovBoolean">
-  <tr>
-    <th colspan="4">Osoby, ktoré sa dajú pridať</th>
-  </tr>
-  <tr>
-    <th>#</th>
-    <th>Osoba</th>
-    <th>Mail</th>
-    <th>Akcie</th>
-  </tr>
-  <tr *ngFor="let person of allPeople">
-    <td>{{allPeople.indexOf(person)}}</td>
-    <td>{{person.val().name}}</td>
-    <td>{{person.val().mail}}</td>
-    <td>
-      <button (click)="addPerson(person, 'owner')">Vlastník</button>
-      <button (click)="addPerson(person, 'member')">Člen</button>
-    </td>
-  </tr>
-</table>
-<button *ngIf="pridajUzivatelovBoolean" (click)="back()">Späť na profil</button>
+  <div *ngIf="pridajUzivatelovBoolean" class="vyhladaj-uzivatelov">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <form class="example" action="action_page.php">
+    <input type="text" placeholder="Vyhľadať užívatela" name="údaj" [(ngModel)]="udaj">
+    <button (click)="vyhladaj(udaj)"><i class="fa fa-search"></i></button>
+    <div *ngIf="uzJeClen">
+      <p>Zadaný užívateľ už je členom</p>
+    </div>
+    <div *ngIf="(neexistuje) && !(najdenyUzivatel) && !(uzJeClen)">
+      <p>Zadaný užívateľ neexistuje</p>
+    </div>
+    <table *ngIf="najdenyUzivatel">
+      <tr>
+        <th colspan="3">Vyhladaný užívateľ</th>
+      </tr>
+      <tr>
+        <th>Osoba</th>
+        <th>Mail</th>
+        <th>Akcie</th>
+      </tr>
+      <td>{{login}}</td>
+      <td>{{email}}</td>
+      <td>
+        <button (click)="pridajUzivatela(najdenyUzivatelID,'owner')">Vlastník</button>
+        <button (click)="pridajUzivatela(najdenyUzivatelID, 'member')">Člen</button>
+      </td>
+    </table>
+
+  </form>
+  </div>
+
+<button *ngIf="pridajUzivatelovBoolean" (click)="potvrd()">Potvrď</button>
+  <div *ngIf="neniOwner" class = 'neniOwner'>
+    <p>V organizácií sa nenachádza žiadny majiteľ</p>
+  </div>
 </div>

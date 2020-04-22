@@ -12,9 +12,11 @@ import {Router} from "@angular/router";
 export class LoginComponent implements OnInit {
 
   zleHeslo : boolean;
+  zlyEmail: boolean;
 
   constructor(private router : Router) {
     this.zleHeslo = false;
+    this.zlyEmail = false;
   }
 
   ngOnInit() {
@@ -36,7 +38,11 @@ export class LoginComponent implements OnInit {
           });
       })
       .catch((error)=>{
-        this.zleHeslo = true;
+        if(f.value.mail.includes('@')){
+          this.zleHeslo = true;
+        } else {
+          this.zlyEmail = true;
+        }
         console.log(error.message);
       })
   }

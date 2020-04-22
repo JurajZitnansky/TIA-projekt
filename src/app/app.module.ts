@@ -10,6 +10,7 @@ import { HeaderComponent } from './header/header.component';
 import { ProfilComponent } from './profil/profil.component';
 import { HomeComponent } from './home/home.component';
 import { RegistraciaOrganizacieComponent } from './registracia-organizacie/registracia-organizacie.component';
+import { StretnutieComponent } from './stretnutie/stretnutie.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { RegistraciaOrganizacieComponent } from './registracia-organizacie/regis
     HeaderComponent,
     ProfilComponent,
     HomeComponent,
-    RegistraciaOrganizacieComponent
+    RegistraciaOrganizacieComponent,
+    StretnutieComponent,
   ],
   imports: [
     BrowserModule,

@@ -112,14 +112,19 @@
   border-style: solid;
 }
 
-.členovia  td {
+.členovia td {
   text-align: center;
 }
+.členovia  td a:hover{
+  color: #4CAF50;
+  text-decoration-line: underline;
+}
+
 .členovia  th {
   border-bottom: solid black 1px;
 }
 
-.orgclenovia button {
+.orgclenovia .buttony button {
   font-family: "Roboto", sans-serif;
   text-transform: uppercase;
   outline: 0;
@@ -133,3 +138,251 @@
   cursor: pointer;
   border-style: solid;
 }
+
+.orgclenovia .buttony button:hover{
+  background: #43A047;
+  color: black;
+}
+
+
+.orgclenovia button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4CAF50;
+  width: 100%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+.orgclenovia button:hover {
+  background: #43A047;
+  color: black;
+}
+
+button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: black;
+  width: 100%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+
+.uprav-uzivatelov-page {
+  font-family: "Roboto", sans-serif;
+  padding: 8% 0 0;
+  margin: auto;
+
+}
+
+
+.uprav-uzivatelov-page{
+  width: 460px;
+  padding: 8% 0 0;
+  margin: auto;
+}
+
+.uprav-uzivatelov-page table{
+  width: 100%;
+  border : solid black 1px;
+}
+
+.uprav-uzivatelov-page table td {
+  text-align: center;
+}
+
+.uprav-uzivatelov-page table th {
+  border-bottom: solid black 1px;
+}
+
+.uprav-uzivatelov-page table button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4CAF50;
+  width: 50%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+
+.uprav-uzivatelov-page button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4CAF50;
+  width: 100%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+
+
+form.example input[type=text] {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f2;
+  width: 80%;
+  border: 0;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+form.example button {
+  width: 20%;
+  padding: 10px;
+  background: #4CAF50;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  border-left: none; /* Prevent double borders */
+  cursor: pointer;
+}
+
+form.example button:hover {
+  background: #43A047;
+  color: black;
+}
+
+/* Clear floats */
+form.example::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+form p {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: crimson;
+  width: 100%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+
+.vyhladaj-uzivatelov {
+  padding-top: 15px;
+}
+
+.neexistujeOwner p {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: crimson;
+  width: 100%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+
+
+.pozri-uzivatela-page {
+  position: relative;
+  z-index: 1;
+  background: #FFFFFF;
+  max-width: 360px;
+  margin: 0 auto 100px;
+  padding: 25px;
+}
+
+.pozri-uzivatela-page table {
+  font-family: "Roboto", sans-serif;
+  padding: 8% 0 0;
+  margin: auto;
+
+}
+
+.pozri-uzivatela-page table th {
+  border-style: solid;
+  text-align: left;
+  background: #4CAF50;
+}
+.pozri-uzivatela-page table td {
+  border-style: solid;
+  text-align: center;
+}
+.pozri-uzivatela-pagetable th label {
+  padding: 14px 16px;
+}
+.pozri-uzivatela-page table td label {
+  padding: 14px 16px;
+}
+
+.pozri-uzivatela-page button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4CAF50;
+  width: 100%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+.pozri-uzivatela-page button:hover,..pozri-uzivatela-page button:active,.pozri-uzivatela-page button:focus {
+  background: #43A047;
+  color: black;
+}
+
+.jedinyOwner p {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: crimson;
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  color: #FFFFFF;
+  font-size: 14px;
+  text-align: center;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+
+
+.my-custom-scrollbar {
+  position: relative;
+  height: 200px;
+  overflow: auto;
+}
+.table-wrapper-scroll-y {
+  display: block;
+}
+
+

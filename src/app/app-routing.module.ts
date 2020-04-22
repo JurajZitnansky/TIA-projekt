@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {SignupComponent} from "./signup/signup.component";
-import {LoginComponent} from "./login/login.component";
-import {HomeComponent} from "./home/home.component";
-import {ProfilComponent} from "./profil/profil.component";
+import {SignupComponent} from './signup/signup.component';
+import {LoginComponent} from './login/login.component';
+import {HomeComponent} from './home/home.component';
+import {ProfilComponent} from './profil/profil.component';
 import {RegistraciaOrganizacieComponent} from './registracia-organizacie/registracia-organizacie.component';
+import {StretnutieComponent} from './stretnutie/stretnutie.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,10 @@ const routes: Routes = [
   {
   path: 'registracia_organizacie',
   component: RegistraciaOrganizacieComponent
+  },
+  {
+    path: 'stretnutie',
+    component: StretnutieComponent
   },
 ];
 
