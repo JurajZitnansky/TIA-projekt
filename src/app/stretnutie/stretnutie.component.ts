@@ -50,6 +50,7 @@ export class StretnutieComponent implements OnInit {
   mozemVytoritStretnutie: boolean;
   pozretieHlasovania: boolean;
   datesHlasovania : any = [];
+  somVyhodeny: boolean;
 
 
   constructor(private router : Router) {
@@ -69,6 +70,7 @@ export class StretnutieComponent implements OnInit {
     this.uzJePoHlasovani = false;
     this.mozemVytoritStretnutie = false;
     this.pozretieHlasovania = false;
+    this.somVyhodeny = false;
 
 
   }
@@ -79,28 +81,34 @@ export class StretnutieComponent implements OnInit {
   }
 
   resolveStr(){
-    let tmp = [];
-    this.userUID = JSON.parse(localStorage.getItem('user')).uid;
-    this.organizaciaUID = JSON.parse(localStorage.getItem('org')).uid;
-    this.viacAkoDvaja(this.organizaciaUID);
-    firebase.database().ref('stretnutie')
-      .on('child_added', (strData)=>{
-      if((strData.val().organizacia == this.organizaciaUID) && strData.val().clenovia[this.userUID] != null ){
-        //this.finalnyDatum(strData.key);
-        if(strData.val().casHlasovania == null) {
-          firebase.database().ref('users/' + this.userUID + '/stretnutie/' + strData.key)
-            .on("value", (zahlasovalUser) => {
-              let things = {
-                "nazov": strData.val().nazovStretnutia,
-                "uid": strData.key,
-                "zahlasovane": zahlasovalUser.val()
-              }
-              tmp.push(things);
-            });
-        }
-        }
-      });
-    this.str = tmp;
+   this.overVyhodenie();
+    if(this.somVyhodeny == true) {
+      this.router.navigate(['home',]);
+    }else {
+
+      let tmp = [];
+      this.userUID = JSON.parse(localStorage.getItem('user')).uid;
+      this.organizaciaUID = JSON.parse(localStorage.getItem('org')).uid;
+      this.viacAkoDvaja(this.organizaciaUID);
+      firebase.database().ref('stretnutie')
+        .on('child_added', (strData) => {
+          if ((strData.val().organizacia == this.organizaciaUID) && strData.val().clenovia[this.userUID] != null) {
+            //this.finalnyDatum(strData.key);
+            if (strData.val().casHlasovania == null) {
+              firebase.database().ref('users/' + this.userUID + '/stretnutie/' + strData.key)
+                .on("value", (zahlasovalUser) => {
+                  let things = {
+                    "nazov": strData.val().nazovStretnutia,
+                    "uid": strData.key,
+                    "zahlasovane": zahlasovalUser.val()
+                  }
+                  tmp.push(things);
+                });
+            }
+          }
+        });
+      this.str = tmp;
+    }
    // console.log(this.str.zahlasovane);
   }
 
@@ -757,6 +765,7 @@ export class StretnutieComponent implements OnInit {
  }
 
  overVyhodenie(){
+    this.somVyhodeny = false;
     let OrgID = JSON.parse(localStorage.getItem('org')).uid;
    firebase.database().ref('users/' + this.userUID)
      .once("value", (userData)=> {
@@ -766,9 +775,11 @@ export class StretnutieComponent implements OnInit {
        localStorage.setItem('user', JSON.stringify(user));
      });
    let userOrg = JSON.parse(localStorage.getItem('user')).organizacie[OrgID];
-   if (JSON.parse(localStorage.getItem('user')).organizacie[OrgID] != null){
-     console.log('nie som vyhodeny');
+   if (JSON.parse(localStorage.getItem('user')).organizacie[OrgID] == null){
+     console.log(' som vyhodeny');
+     this.somVyhodeny = true;
    }
+   console.log(this.somVyhodeny);
  }
 
  viacAkoDvaja(organizacia){
