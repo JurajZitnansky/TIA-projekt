@@ -76,16 +76,12 @@ export class StretnutieComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.overVyhodenie();
     this.resolveStr();
 
   }
 
   resolveStr(){
-   this.overVyhodenie();
-    if(this.somVyhodeny == true) {
-      this.router.navigate(['home',]);
-    }else {
-
       let tmp = [];
       this.userUID = JSON.parse(localStorage.getItem('user')).uid;
       this.organizaciaUID = JSON.parse(localStorage.getItem('org')).uid;
@@ -108,7 +104,6 @@ export class StretnutieComponent implements OnInit {
           }
         });
       this.str = tmp;
-    }
    // console.log(this.str.zahlasovane);
   }
 
@@ -777,8 +772,8 @@ export class StretnutieComponent implements OnInit {
      });
    let userOrg = JSON.parse(localStorage.getItem('user')).organizacie[OrgID];
    if (JSON.parse(localStorage.getItem('user')).organizacie[OrgID] == null){
-     console.log(' som vyhodeny');
      this.somVyhodeny = true;
+     this.router.navigate(['profil',]);
    }
    console.log(this.somVyhodeny);
  }
