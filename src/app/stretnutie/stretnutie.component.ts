@@ -767,10 +767,11 @@ export class StretnutieComponent implements OnInit {
  overVyhodenie(){
     this.somVyhodeny = false;
     let OrgID = JSON.parse(localStorage.getItem('org')).uid;
-   firebase.database().ref('users/' + this.userUID)
+   let userID = JSON.parse(localStorage.getItem('user')).uid;
+   firebase.database().ref('users/' + userID)
      .once("value", (userData)=> {
        let user = userData.val();
-       user.uid = this.userUID;
+       user.uid = userID;
        localStorage.removeItem('user');
        localStorage.setItem('user', JSON.stringify(user));
      });
