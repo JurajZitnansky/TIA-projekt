@@ -17,6 +17,13 @@
       <input type="radio" name="acc" id="acc2">
       <label for="acc2"> Stretnutia</label>
       <div class="acc-body">
+        <table>
+          <tr *ngFor="let stretnutie of str">
+            <td>
+            <button (click)="strUdaje(stretnutie.uid)" >{{stretnutie.nazov}}</button>
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
@@ -167,4 +174,54 @@
   <div *ngIf="neexistujeOwner" class = 'neexistujeOwner'>
     <p>V organizácií sa nenachádza žiadny majiteľ</p>
   </div>
+</div>
+
+<div *ngIf="stretnutieBoolean" class="home-str-page">
+  <table class="tabulka-udaje">
+    <tr>
+      <th> <label for="nazovStretnutia" id="nazovStretnutia" class="bold">Názov stretnutia :</label></th>
+      <td>  <label for="nazovStretnutia">{{udajeStr.nazovStretnutia}}  </label></td>
+    </tr>
+    <tr>
+      <th> <label for="miestoStretnutia" id="miestoStretnutia"class="bold">Miesto stretnutia :</label></th>
+      <td> <label for="miestoStretnutia">{{udajeStr.miestoStretnutia}}  </label></td>
+    </tr>
+    <tr>
+      <th><label for="popisStretnutia" id="popisStretnutia" class="bold">Popis stretnutia :</label></th>
+      <td class = "popis"><label for="popisStretnutia">{{udajeStr.popisStretnutia}}   </label></td>
+    </tr>
+    <tr>
+      <th> <label for="casStretnutia" id="casStretnutia" class="bold">Cas stretnutia :</label></th>
+      <td> <label for="casStretnutia">{{udajeStr.casHlasovania}}</label></td>
+    </tr>
+  </table>
+
+  <div class="strClenovia" >
+    <div class = "table-wrapper-scroll-y my-custom-scrollbar">
+      <table class="členovia">
+        <tr>
+          <th colspan="4">Pozvaný členovia</th>
+        </tr>
+        <tr>
+          <th>Potvrdená účasť</th>
+          <th>Osoba</th>
+          <th>E-mail</th>
+          <th>Funkcia</th>
+        </tr>
+        <tr *ngFor="let person of clenoviaStretnutia">
+          <td><input type="checkbox" [checked]="person.check == 'true'" disabled></td>
+
+          <td (click)="profil(person)" ><a>{{person.name}}</a></td>
+          <td (click)="profil(person)"> <a>{{person.mail}}</a></td>
+          <td>{{person.pozicia}}</td>
+        </tr>
+      </table>
+    </div>
+
+<div *ngIf="!(jePoStretnutiBoolean)">
+  <button *ngIf="potvrdenaUcast === 'false'" (click)="potvrditUcast(udajeStr.uid)" >Potvrďiť účasť </button>
+</div>
+  <button (click)="back3()">Späť</button>
+  </div>
+  <button *ngIf="jePoStretnutiBoolean" (click)="vymazStr(udajeStr.uid)">X</button>
 </div>

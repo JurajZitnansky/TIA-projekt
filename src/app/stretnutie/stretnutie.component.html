@@ -1,2 +1,206 @@
-<p>stretnutie works!</p>
-<button (click)="back()">Back</button>
+<div *ngIf="!pridajStretnutieBoolean && !stretnutieBoolean && !hlasovanie && !pozretieHlasovania" class="stretnutie-page">
+  <table class="tabulka-stretnutie">
+    <tr>
+      <th colspan="2">Stretnutia o ktorých sa hlasuje</th>
+    </tr>
+    <tr *ngFor="let stretnutie of str">
+      <td (click)="strUdaje(stretnutie.uid)" ><label>{{stretnutie.nazov}}</label></td>
+      <td *ngIf="[stretnutie.zahlasovane] == 'false'" (click)="hlasuj(stretnutie.uid)" ><label>Hlasuj</label></td>
+      <td *ngIf="[stretnutie.zahlasovane] == 'true'" (click)="zahlasovaneStr(stretnutie.uid)"><label>Zahlasovane</label></td>
+    </tr>
+  </table>
+  <button *ngIf="!pridajStretnutieBoolean && mozemVytoritStretnutie" (click)="pridajStretnutieButton()">Pridaj stretnutie</button>
+
+  <button *ngIf="!pridajStretnutieBoolean" (click)="back()">Back</button>
+</div>
+
+<div *ngIf="stretnutieBoolean" class="pozri-stretnutie-page">
+
+    <table class="tabulka-udaje">
+      <tr>
+        <th> <label for="nazovStretnutia" id="nazovStretnutia" class="bold">Názov stretnutia :</label></th>
+        <td>  <label for="nazovStretnutia">{{udajeStr.nazovStretnutia}}  </label></td>
+      </tr>
+      <tr>
+        <th> <label for="miestoStretnutia" id="miestoStretnutia"class="bold">Miesto stretnutia :</label></th>
+        <td> <label for="miestoStretnutia">{{udajeStr.miestoStretnutia}}  </label></td>
+      </tr>
+      <tr>
+        <th><label for="popisStretnutia" id="popisStretnutia" class="bold">Popis stretnutia :</label></th>
+        <td> <label for="popisStretnutia">{{udajeStr.popisStretnutia}} </label></td>
+      </tr>
+    </table>
+
+  <div class="strClenovia" >
+    <div class = "table-wrapper-scroll-y my-custom-scrollbar">
+    <table class="pozvaní">
+      <tr>
+        <th colspan="3">pozvaní členovia</th>
+      </tr>
+      <tr>
+        <th>Osoba</th>
+        <th>E-mail</th>
+        <th>Funkcia</th>
+      </tr>
+      <tr *ngFor="let clen of clenovia">
+        <td>{{clen.name}}</td>
+        <td>{{clen.mail}}</td>
+        <td>{{clen.pozicia}}</td>
+
+      </tr>
+    </table>
+      </div>
+  </div>
+
+  <button (click)="back3()">Back</button>
+</div>
+
+<div *ngIf="pozretieHlasovania" class="hlasovanie-page">
+  <div class="form">
+    <table *ngIf="!(uzJePoHlasovani)" class="hlasy">
+      <tr>
+        <th colspan="2">Dátumy hlasovanie</th>
+      </tr>
+      <tr>
+        <th>Dátum</th>
+        <th>Áno</th>
+      </tr>
+      <tr *ngFor="let date of datesHlasovania">
+        <td>{{date.date}} {{date.time}}</td>
+        <td><input id="wb" type="checkbox" [checked]="date.check == true" disabled></td>
+      </tr>
+    </table>
+
+    <div *ngIf="uzJePoHlasovani"  class="hlasovanieSkoncilo">
+      <p>Hlasovanie sa už skončilo</p>
+    </div>
+    <button (click)="back5()">Späť</button>
+  </div>
+</div>
+
+
+<div *ngIf="hlasovanie " class="hlasovanie-page">
+  <div class="form">
+    <table *ngIf="!(uzJePoHlasovani)" class="hlasy">
+      <tr>
+        <th colspan="2">Dátumy hlasovanie</th>
+      </tr>
+      <tr>
+        <th>Dátum</th>
+        <th>Áno</th>
+      </tr>
+      <tr *ngFor="let date of datesNaHlasovanie">
+        <td>{{date.date}} {{date.time}}</td>
+        <td (click)="hlas(date)"> <input id="wb" type="checkbox"></td>
+      </tr>
+    </table>
+
+  <button *ngIf="!uzJePoHlasovani" (click)="zahlasuj()">Potvrd</button>
+  <div *ngIf="uzJePoHlasovani"  class="hlasovanieSkoncilo">
+    <p>Hlasovanie sa už skončilo</p>
+  </div>
+  <button (click)="back4()">Back</button>
+  </div>
+</div>
+
+<div *ngIf="pridajStretnutieBoolean" class="pridaj-stretnutie-page">
+  <div class="form">
+  <div class="uzavretieApridanie">
+    <p>Vytvorenie stretnutia:</p>
+  </div>
+
+<form  #f="ngForm" (ngSubmit)="pridajStretnutie(f)">
+    <input ngModel type="text" id="nazovStretnutia" name="nazovStretnutia"  placeholder="Názov stretnutia" required>
+    <br>
+    <input ngModel type="text" id="miestoStretnutia" name="miestoStretnutia" placeholder="Miesto stretnutia">
+    <br>
+    <textarea ngModel name="popisStretnutia" rows="3" cols="50" id="popisStretnutia" placeholder="Popis Stretnutia"></textarea>
+    <br>
+
+
+  <div class="orgclenovia" >
+    <div class = "table-wrapper-scroll-y my-custom-scrollbar">
+      <table class="členovia">
+        <tr>
+          <th colspan="3">Členovia organizácie</th>
+        </tr>
+        <tr>
+          <th>Akcia</th>
+          <th>Osoba</th>
+         <!-- <th>E-mail</th> -->
+          <th>Funkcia</th>
+        </tr>
+        <tr *ngFor="let person of allPeople">
+          <td (click)="checkbox(person)"> <input type="checkbox"></td>
+          <td> {{person.name}}</td>
+         <!-- <td> {{person.mail}}</td> -->
+          <td>{{person.pozicia}}</td>
+
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="uzavretieApridanie">
+  <p>Dokedy uzavrieť hlasovanie:</p>
+  </div>
+  <form #h="ngForm" (ngSubmit)="pridajCasNaHlasovanie(h)">
+
+ <input ngModel type="date" id="datum" name="datum">
+ <input ngModel type="time" id="cas" name="cas">
+
+    <input  *ngIf="!requestDates" type="submit" value="Potvrď">
+  </form>
+
+
+  <div class="error" *ngIf="hodinaPlus" >
+    <p>Ukončenie hlasovania musí byť minimálne o hodinu</p>
+  </div>
+
+  <div *ngIf="requestDates">
+    <div class="uzavretieApridanie">
+  <p>Pridaj čas:</p>
+    </div>
+  <form #g="ngForm" (ngSubmit)="pridajDatum(g)">
+    <div class="pridanieCasu">
+    <input ngModel type="date" id="date" name="date">
+    <input ngModel type="time" id="time" name="time">
+    <input type="submit" value="+">
+      </div>
+  </form>
+  <table class="pridaneDatumy">
+    <tr *ngFor="let date of dates">
+      <td>
+      <label>{{date.date}}</label>
+      <label> {{date.time}}</label>
+      </td>
+    <td>
+      <button (click)="odstran(date)">Vymaz</button>
+    </td>
+    </tr>
+  </table>
+    <div *ngIf="hodinaPlusOdUkoncenia" >
+      <p>Ukončenie hlasovania musí byť minimálne o hodinu</p>
+    </div>
+  </div>
+
+
+  <input type="submit" value="Ulož">
+  <div class="error" *ngIf="chybaTerminUzavretiaBoolean" >
+    <p>Chýba termín uzavretia stretnutia</p>
+  </div>
+  <div class="error" *ngIf="chybaTerminStretnutia" >
+    <p>Chýba termín stretnutia</p>
+  </div>
+  <div class="error" *ngIf="asponDvajaBoolean" >
+    <p>Musia byť aspoň 2 účastníci stretnutia</p>
+  </div>
+  <div class="error" *ngIf="chybaNazovBoolean" >
+    <p>Chýbajú údaje stretnutia(Názov, Miesto)</p>
+  </div>
+
+  <button (click)="back2()">Back</button>
+</form>
+  </div>
+</div>
+

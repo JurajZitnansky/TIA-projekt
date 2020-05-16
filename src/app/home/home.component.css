@@ -101,11 +101,24 @@
   margin: auto;
 }
 
+.home-str-page{
+  width: 460px;
+  padding: 8% 0 0;
+  margin: auto;
+}
+
 .orgclenovia {
   font-family: "Roboto", sans-serif;
   padding: 8% 0 0;
   margin: auto;
 }
+
+.strClenovia {
+  font-family: "Roboto", sans-serif;
+  padding: 8% 0 0;
+  margin: auto;
+}
+
 
 .členovia{
   width: 100%;
@@ -160,6 +173,25 @@
   border-style: solid;
 }
 .orgclenovia button:hover {
+  background: #43A047;
+  color: black;
+}
+
+.strClenovia button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4CAF50;
+  width: 100%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+.strClenovia button:hover {
   background: #43A047;
   color: black;
 }

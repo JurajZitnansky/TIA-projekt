@@ -1,0 +1,393 @@
+.stretnutie-page{
+  width: 360px;
+  padding: 8% 0 0;
+  margin: auto;
+}
+
+.tabulka-stretnutie {
+  font-family: "Roboto", sans-serif;
+  padding: 8% 0 0;
+  margin: auto;
+  width: 100%;
+}
+
+.tabulka-stretnutie th {
+  border-style: solid;
+  text-align: center;
+  background: #4CAF50;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.tabulka-stretnutie td {
+  border-style: solid;
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.tabulka-stretnutie th label {
+  padding: 14px 16px;
+}
+.tabulka-stretnutie td label {
+  padding: 14px 16px;
+}
+
+.stretnutie-page button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4CAF50;
+  width: 100%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+.stretnutie-page button:hover {
+  background: #43A047;
+  color: black;
+}
+
+
+.pozri-stretnutie-page{
+  width: 360px;
+  padding: 8% 0 0;
+  margin: auto;
+}
+
+.tabulka-udaje {
+  font-family: "Roboto", sans-serif;
+  padding: 8% 0 0;
+  margin: auto;
+
+}
+
+.tabulka-udaje th {
+  border-style: solid;
+  text-align: left;
+  background: #4CAF50;
+}
+.tabulka-udaje td {
+  border-style: solid;
+  text-align: center;
+}
+.tabulka-udaje th label {
+  padding: 14px 16px;
+}
+.tabulka-udaje td label {
+  padding: 14px 16px;
+}
+
+.strClenovia {
+  font-family: "Roboto", sans-serif;
+  padding: 8% 0 0;
+  margin: auto;
+}
+
+
+.pozvaní{
+  width: 100%;
+  border-style: solid;
+}
+
+.pozvaní td {
+  text-align: center;
+}
+.pozvaní  td a:hover{
+  color: #4CAF50;
+  text-decoration-line: underline;
+}
+
+.pozvaní  th {
+  border-bottom: solid black 1px;
+}
+.pozri-stretnutie-page button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4CAF50;
+  width: 100%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+.pozri-stretnutie-page button:hover {
+  background: #43A047;
+  color: black;
+}
+
+.pridaj-stretnutie-page{
+  width: 360px;
+  padding: 8% 0 0;
+  margin: auto;
+
+}
+
+.pridaj-stretnutie-page .form {
+  position: relative;
+  z-index: 1;
+  background: #FFFFFF;
+  max-width: 360px;
+  margin: 0 auto 100px;
+  padding: 10px;
+  text-align: center;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+
+.pridaj-stretnutie-page input {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+.pridaj-stretnutie-page textarea {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+.pridaj-stretnutie-page button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4CAF50;
+  width: 100%;
+  border: 0;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+.pridaj-stretnutie-page button:hover,.pridaj-stretnutie-page button:active,.pridaj-stretnutie-page button:focus {
+  background: #43A047;
+  color: black;
+}
+.uzavretieApridanie p {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: black;
+  width: 100%;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  text-align: center;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+
+
+.pridaj-stretnutie-page input[type=date] {
+   font-family: "Roboto", sans-serif;
+   outline: 0;
+   background: #f2f2f2;
+   width: 60%;
+   border: black;
+   border-style: solid;
+   margin: 0 0 15px;
+   padding: 15px;
+   box-sizing: border-box;
+   font-size: 14px;
+ }
+
+.pridaj-stretnutie-page input[type=time] {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f2;
+  width: 40%;
+  border: black;
+  border-style: solid;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.pridaj-stretnutie-page input[type=submit] {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4CAF50;
+  width: 100%;
+  border: 0;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+
+.pridanieCasu input[type=date] {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f2;
+  width: 50%;
+  border: black;
+  border-style: solid;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.pridanieCasu input[type=time] {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f2;
+  width: 30%;
+  border: black;
+  border-style: solid;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.pridanieCasu input[type=submit] {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #4CAF50;
+  width: 20%;
+  border: black;
+  border-style: solid;
+  margin: 0 0 15px;
+  padding: 17px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.pridaneDatumy {
+  font-family: "Roboto", sans-serif;
+  padding: 8% 0 0;
+  width: 100%;
+
+}
+
+.pridaneDatumy td {
+  border-style: solid;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.error p {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: crimson;
+  width: 100%;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  text-align: center;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+
+
+.orgclenovia {
+  font-family: "Roboto", sans-serif;
+  padding: 8% 0 0;
+  margin: auto;
+}
+.členovia{
+  width: 100%;
+  border-style: solid;
+}
+
+.členovia td {
+  text-align: center;
+}
+.členovia  td a:hover{
+  color: #4CAF50;
+  text-decoration-line: underline;
+}
+
+.členovia  th {
+  border-bottom: solid black 1px;
+}
+
+.hlasovanie-page{
+  width: 360px;
+  padding: 8% 0 0;
+  margin: auto;
+}
+
+.form {
+  position: relative;
+  z-index: 1;
+  background: #FFFFFF;
+  max-width: 360px;
+  margin: 0 auto 100px;
+  padding: 45px;
+  text-align: center;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+.hlasy {
+  font-family: "Roboto", sans-serif;
+  padding: 8% 0 0;
+  width: 100%;
+
+}
+
+.hlasy th {
+  border-style: solid;
+  text-align: center;
+  background: #4CAF50;
+  padding: 10px;
+}
+.hlasy td {
+  border-style: solid;
+  text-align: center;
+  vertical-align: middle;
+}
+#wb {
+  margin-top: 15px;
+  vertical-align: center;
+}
+
+.hlasovanieSkoncilo p {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: crimson;
+  width: 100%;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-style: solid;
+}
+
+
+
+
+

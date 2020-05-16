@@ -116,13 +116,8 @@ export class ProfilComponent implements OnInit {
       .on("child_added", (orgUdaje) =>{
         if (orgUdaje.val().funkcia =='owner') {
           let pocet = this.overPocetOwnerov(orgUdaje.key);
-         /* if (pocet === 1) {
-            this.jedinyOwner = true;
-          }*/
-          //console.log(pocet);
         }
     });
-
   }
 
   nie(){
@@ -152,6 +147,7 @@ export class ProfilComponent implements OnInit {
     }).catch(function(error) {
       // An error happened.
     });
+    this.vymazUserStr(userID);
      if(this.jedinyOwner == false){
        firebase.database().ref('users/' + userID  + '/organizacie')
          .on("child_added", (orgUdaje) => {
@@ -180,4 +176,53 @@ export class ProfilComponent implements OnInit {
     localStorage.removeItem('user');
     this.router.navigate(['',]);
    }
+
+
+  vymazUserStr(user){
+    let tmp;
+    firebase.database().ref('stretnutie/')
+      .on('child_added', (stretnutieUdaje) => {
+              firebase.database().ref('stretnutie/' + stretnutieUdaje.key + '/clenovia/' + user)
+                .on('value', (userStretnutieUdaje) => {
+                  if(userStretnutieUdaje.val() != null){
+                    tmp = [];
+                    firebase.database().ref('stretnutie/' + stretnutieUdaje.key + '/clenovia')
+                      .on("child_added", (strUserData) => {
+                        tmp.push(strUserData.val());
+                      });
+                    if(tmp.length > 2){
+                      if (stretnutieUdaje.val().ucast != null){
+                        firebase.database().ref('stretnutie/' + stretnutieUdaje.key + '/ucast/' + user)
+                          .remove();
+                      } else{
+                        firebase.database().ref('stretnutie/' + stretnutieUdaje.key + '/dates')
+                          .on('child_added', (dateHlasy) => {
+                            console.log(dateHlasy.val().hlasy != null);
+                            if(dateHlasy.val().hlasy != null){
+                              firebase.database().ref('stretnutie/' + stretnutieUdaje.key + '/dates/' + dateHlasy.key + '/hlasy')
+                                .on('child_added', (hlasy) => {
+                                  if(hlasy.key == user){
+                                    firebase.database().ref('stretnutie/' + stretnutieUdaje.key + '/dates/' + dateHlasy.key + '/hlasy/' + hlasy.key)
+                                      .remove();
+                                  }
+                                });
+                            }
+                          });
+                      }
+
+                      firebase.database().ref('stretnutie/' + stretnutieUdaje.key + '/clenovia/' + user)
+                        .remove();
+                    } else {
+                      firebase.database().ref('stretnutie/' + stretnutieUdaje.key + '/clenovia')
+                        .on("child_added", (strUserData) => {
+                          firebase.database().ref('users/' + strUserData.key + '/stretnutie/' + stretnutieUdaje.key)
+                            .remove();
+                        });
+                      firebase.database().ref('stretnutie/' + stretnutieUdaje.key )
+                        .remove();
+                    }
+                  }
+                });
+      });
+  }
 }
