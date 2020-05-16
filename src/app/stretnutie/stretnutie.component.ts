@@ -50,7 +50,6 @@ export class StretnutieComponent implements OnInit {
   mozemVytoritStretnutie: boolean;
   pozretieHlasovania: boolean;
   datesHlasovania : any = [];
-  somVyhodeny: boolean;
 
 
   constructor(private router : Router) {
@@ -70,41 +69,39 @@ export class StretnutieComponent implements OnInit {
     this.uzJePoHlasovani = false;
     this.mozemVytoritStretnutie = false;
     this.pozretieHlasovania = false;
-    this.somVyhodeny = false;
 
 
   }
 
   ngOnInit() {
-    this.overVyhodenie();
     this.resolveStr();
 
   }
 
   resolveStr(){
-      let tmp = [];
-      this.userUID = JSON.parse(localStorage.getItem('user')).uid;
-      this.organizaciaUID = JSON.parse(localStorage.getItem('org')).uid;
-      this.viacAkoDvaja(this.organizaciaUID);
-      firebase.database().ref('stretnutie')
-        .on('child_added', (strData) => {
-          if ((strData.val().organizacia == this.organizaciaUID) && strData.val().clenovia[this.userUID] != null) {
-            //this.finalnyDatum(strData.key);
-            if (strData.val().casHlasovania == null) {
-              firebase.database().ref('users/' + this.userUID + '/stretnutie/' + strData.key)
-                .on("value", (zahlasovalUser) => {
-                  let things = {
-                    "nazov": strData.val().nazovStretnutia,
-                    "uid": strData.key,
-                    "zahlasovane": zahlasovalUser.val()
-                  }
-                  tmp.push(things);
-                });
-            }
+    let tmp = [];
+    this.userUID = JSON.parse(localStorage.getItem('user')).uid;
+    this.organizaciaUID = JSON.parse(localStorage.getItem('org')).uid;
+    this.viacAkoDvaja(this.organizaciaUID);
+    firebase.database().ref('stretnutie')
+      .on('child_added', (strData)=>{
+        if((strData.val().organizacia == this.organizaciaUID) && strData.val().clenovia[this.userUID] != null ){
+          //this.finalnyDatum(strData.key);
+          if(strData.val().casHlasovania == null) {
+            firebase.database().ref('users/' + this.userUID + '/stretnutie/' + strData.key)
+              .on("value", (zahlasovalUser) => {
+                let things = {
+                  "nazov": strData.val().nazovStretnutia,
+                  "uid": strData.key,
+                  "zahlasovane": zahlasovalUser.val()
+                }
+                tmp.push(things);
+              });
           }
-        });
-      this.str = tmp;
-   // console.log(this.str.zahlasovane);
+        }
+      });
+    this.str = tmp;
+    // console.log(this.str.zahlasovane);
   }
 
   strUdaje(stretnutie){
@@ -119,21 +116,21 @@ export class StretnutieComponent implements OnInit {
 
   naplnClenov(stretnutie){
     let tmp = [];
-      firebase.database().ref('stretnutie/' + stretnutie + '/clenovia')
-        .on("child_added", (userData) => {
-          firebase.database().ref('users/')
-            .on("child_added", (Data) => {
-              if (userData.key == Data.key) {
-                let udaje = {
-                  "uid": Data.key,
-                  "name": Data.val().name,
-                  "pozicia": Data.val().organizacie[this.organizaciaUID].funkcia,
-                  "mail": Data.val().mail,
-                };
-                tmp.push(udaje);
-              }
-            });
-        });
+    firebase.database().ref('stretnutie/' + stretnutie + '/clenovia')
+      .on("child_added", (userData) => {
+        firebase.database().ref('users/')
+          .on("child_added", (Data) => {
+            if (userData.key == Data.key) {
+              let udaje = {
+                "uid": Data.key,
+                "name": Data.val().name,
+                "pozicia": Data.val().organizacie[this.organizaciaUID].funkcia,
+                "mail": Data.val().mail,
+              };
+              tmp.push(udaje);
+            }
+          });
+      });
     this.clenovia = tmp;
   }
 
@@ -157,12 +154,12 @@ export class StretnutieComponent implements OnInit {
     firebase.database().ref('stretnutie/' + stretnutie + '/dates')
       .on("child_added", (date)=>{
         let hlasovalSom = false;
-          firebase.database().ref('stretnutie/' + stretnutie + '/dates/'+ date.key + '/hlasy/' + userID)
-            .on("value", (dateHlasy)=> {
-             if(dateHlasy.val() != null){
-               hlasovalSom = true;
-             }
-            });
+        firebase.database().ref('stretnutie/' + stretnutie + '/dates/'+ date.key + '/hlasy/' + userID)
+          .on("value", (dateHlasy)=> {
+            if(dateHlasy.val() != null){
+              hlasovalSom = true;
+            }
+          });
         let udaje = {
           "date": date.val().date,
           "time": date.val().time,
@@ -206,50 +203,50 @@ export class StretnutieComponent implements OnInit {
     let OrgID = JSON.parse(localStorage.getItem('org')).uid;
     let userFunkcia = (JSON.parse(localStorage.getItem('user')).organizacie[OrgID].funkcia);
     if(date.check == true) {
-          firebase.database().ref('stretnutie/' +  this.strHlasovanieUID + '/dates/' + date.uid + '/hlasy')
-            .update({
-              [this.userUID]: userFunkcia
-            })
+      firebase.database().ref('stretnutie/' +  this.strHlasovanieUID + '/dates/' + date.uid + '/hlasy')
+        .update({
+          [this.userUID]: userFunkcia
+        })
     } else {
-          firebase.database().ref('stretnutie/' +  this.strHlasovanieUID  + '/dates/' + date.uid + '/hlasy/' + this.userUID)
-            .remove()
+      firebase.database().ref('stretnutie/' +  this.strHlasovanieUID  + '/dates/' + date.uid + '/hlasy/' + this.userUID)
+        .remove()
     }
   }
 
   zahlasuj(){
     this.poTermine(this.strHlasovanieUID);
-        if(this.ukoncenieHlasovania != true) {
+    if(this.ukoncenieHlasovania != true) {
 
-          firebase.database().ref('users/' + this.userUID + '/stretnutie')
-            .update({
-              [this.strHlasovanieUID]: "true"
-            });
-          firebase.database().ref('stretnutie/' + this.strHlasovanieUID + '/clenovia')
-            .update({
-              [this.userUID]: "true"
-            });
-          this.zahlasovane = true;
-          this.hlasovanie = false;
-          firebase.database().ref('users/' + this.userUID)
-            .once("value", (userData) => {
-              let user = userData.val();
-              user.uid = this.userUID;
-              localStorage.removeItem('user');
-              localStorage.setItem('user', JSON.stringify(user));
-            });
+      firebase.database().ref('users/' + this.userUID + '/stretnutie')
+        .update({
+          [this.strHlasovanieUID]: "true"
+        });
+      firebase.database().ref('stretnutie/' + this.strHlasovanieUID + '/clenovia')
+        .update({
+          [this.userUID]: "true"
+        });
+      this.zahlasovane = true;
+      this.hlasovanie = false;
+      firebase.database().ref('users/' + this.userUID)
+        .once("value", (userData) => {
+          let user = userData.val();
+          user.uid = this.userUID;
+          localStorage.removeItem('user');
+          localStorage.setItem('user', JSON.stringify(user));
+        });
 
 
-          this.finalnyDatum(this.strHlasovanieUID);
-          this.resolveStr();
-        } else {
-          firebase.database().ref('stretnutie/' +  this.strHlasovanieUID  + '/dates')
-            .on ('child_added', (dateUdaje) =>{
-              firebase.database().ref('stretnutie/' +  this.strHlasovanieUID  + '/dates/' + dateUdaje.key + '/hlasy/' + this.userUID)
-                .remove()
-            })
-          this.finalnyDatum(this.strHlasovanieUID);
-          this.resolveStr();
-        }
+      this.finalnyDatum(this.strHlasovanieUID);
+      this.resolveStr();
+    } else {
+      firebase.database().ref('stretnutie/' +  this.strHlasovanieUID  + '/dates')
+        .on ('child_added', (dateUdaje) =>{
+          firebase.database().ref('stretnutie/' +  this.strHlasovanieUID  + '/dates/' + dateUdaje.key + '/hlasy/' + this.userUID)
+            .remove()
+        })
+      this.finalnyDatum(this.strHlasovanieUID);
+      this.resolveStr();
+    }
   }
 
   poTermine(stretnutie){
@@ -329,12 +326,12 @@ export class StretnutieComponent implements OnInit {
     if(allVoted || this.ukoncenieHlasovania == true ){
       firebase.database().ref('stretnutie/' + stretnutie)
         .on('value', (cas)=> {
-        if (cas.val().casHlasovania != null){
-          this.uzMaFinalDatum = true;
-        }
+          if (cas.val().casHlasovania != null){
+            this.uzMaFinalDatum = true;
+          }
         });
       if(this.uzMaFinalDatum == false) {
-       // console.log('som tu a mal by som pridat finalny datum');
+        // console.log('som tu a mal by som pridat finalny datum');
         let finalnyDatum = '';
         let finalnyCas = '';
         let chosenDate = {
@@ -387,15 +384,15 @@ export class StretnutieComponent implements OnInit {
           });
         firebase.database().ref('stretnutie/' + stretnutie)
           .on('value', (stdUdaje) => {
-           if(stdUdaje.val().ucast == null){
-             firebase.database().ref('stretnutie/' + stretnutie  +'/clenovia')
-               .on('child_added', (userDataHelp) =>{
-                 firebase.database().ref('stretnutie/' + stretnutie  +'/ucast')
-                   .update({
-                     [userDataHelp.key]:  'false'
-                   });
-               });
-           }
+            if(stdUdaje.val().ucast == null){
+              firebase.database().ref('stretnutie/' + stretnutie  +'/clenovia')
+                .on('child_added', (userDataHelp) =>{
+                  firebase.database().ref('stretnutie/' + stretnutie  +'/ucast')
+                    .update({
+                      [userDataHelp.key]:  'false'
+                    });
+                });
+            }
           });
       }
     }
@@ -428,42 +425,42 @@ export class StretnutieComponent implements OnInit {
     let CelyDate = g.value.date + ' '+ g.value.time;
 
     if(!this.rovnakyCas.includes(g.value.date +' '+ g.value.time)){
-    if (rok > this.datumUkoncenia.substring(0,4) && mesiac !="" && den != "" && hodiny != "" && minuty != ""){
-      firebase.database().ref('stretnutie/' + this.stretnutieUID + "/dates")
-        .push(g.value)
-        .then(()=>{
-          this.rovnakyCas.push(g.value.date +' ' + g.value.time);
-          this.resolveDates();
-        });
-    } else if (rok == this.datumUkoncenia.substring(0,4) && mesiac > this.datumUkoncenia.substring(5,7) && den != "" && hodiny != "" && minuty != "") {
-      firebase.database().ref('stretnutie/' + this.stretnutieUID + "/dates")
-        .push(g.value)
-        .then(()=>{
-          this.rovnakyCas.push(g.value.date +' ' + g.value.time);
-          this.resolveDates();
-        });
-    } else if (mesiac == this.datumUkoncenia.substring(5,7) && den > this.datumUkoncenia.substring(8,10) && hodiny != "" && minuty != "") {
-      firebase.database().ref('stretnutie/' + this.stretnutieUID + "/dates")
-        .push(g.value)
-        .then(()=>{
-          this.rovnakyCas.push(g.value.date +' ' + g.value.time);
-          this.resolveDates();
-        });
-    } else if (den == this.datumUkoncenia.substring(8,10) && hodiny > parseInt(hodinaUkoncecnia ) && minuty != "") {
-      firebase.database().ref('stretnutie/' + this.stretnutieUID + "/dates")
-        .push(g.value)
-        .then(()=>{
-          this.rovnakyCas.push(g.value.date +' ' + g.value.time);
-          this.resolveDates();
-        });
-    } else if (hodiny == parseInt(hodinaUkoncecnia )&& minuty >= this.casUkoncenia.substring(3,5)){
-      firebase.database().ref('stretnutie/' + this.stretnutieUID + "/dates")
-        .push(g.value)
-        .then(()=>{
-          this.rovnakyCas.push(g.value.date +' ' + g.value.time);
-          this.resolveDates();
-        });
-    }
+      if (rok > this.datumUkoncenia.substring(0,4) && mesiac !="" && den != "" && hodiny != "" && minuty != ""){
+        firebase.database().ref('stretnutie/' + this.stretnutieUID + "/dates")
+          .push(g.value)
+          .then(()=>{
+            this.rovnakyCas.push(g.value.date +' ' + g.value.time);
+            this.resolveDates();
+          });
+      } else if (rok == this.datumUkoncenia.substring(0,4) && mesiac > this.datumUkoncenia.substring(5,7) && den != "" && hodiny != "" && minuty != "") {
+        firebase.database().ref('stretnutie/' + this.stretnutieUID + "/dates")
+          .push(g.value)
+          .then(()=>{
+            this.rovnakyCas.push(g.value.date +' ' + g.value.time);
+            this.resolveDates();
+          });
+      } else if (mesiac == this.datumUkoncenia.substring(5,7) && den > this.datumUkoncenia.substring(8,10) && hodiny != "" && minuty != "") {
+        firebase.database().ref('stretnutie/' + this.stretnutieUID + "/dates")
+          .push(g.value)
+          .then(()=>{
+            this.rovnakyCas.push(g.value.date +' ' + g.value.time);
+            this.resolveDates();
+          });
+      } else if (den == this.datumUkoncenia.substring(8,10) && hodiny > parseInt(hodinaUkoncecnia ) && minuty != "") {
+        firebase.database().ref('stretnutie/' + this.stretnutieUID + "/dates")
+          .push(g.value)
+          .then(()=>{
+            this.rovnakyCas.push(g.value.date +' ' + g.value.time);
+            this.resolveDates();
+          });
+      } else if (hodiny == parseInt(hodinaUkoncecnia )&& minuty >= this.casUkoncenia.substring(3,5)){
+        firebase.database().ref('stretnutie/' + this.stretnutieUID + "/dates")
+          .push(g.value)
+          .then(()=>{
+            this.rovnakyCas.push(g.value.date +' ' + g.value.time);
+            this.resolveDates();
+          });
+      }
 
     }
 
@@ -482,31 +479,31 @@ export class StretnutieComponent implements OnInit {
     let hodiny = this.casUkoncenia.substring(0,2);
     let minuty = this.casUkoncenia.substring(3,5);
     if (rok > dateTime.getFullYear()&& mesiac !="" && den != "" && hodiny != "" && minuty != ""){
-          this.requestDates = true;
-          this.chybaTerminUzavretiaBoolean = false;
-          firebase.database().ref('stretnutie/' + this.stretnutieUID + "/UkoncenieHlasovania")
-            .set(h.value);
+      this.requestDates = true;
+      this.chybaTerminUzavretiaBoolean = false;
+      firebase.database().ref('stretnutie/' + this.stretnutieUID + "/UkoncenieHlasovania")
+        .set(h.value);
     } else if (rok == dateTime.getFullYear() && mesiac > dateTime.getMonth()+1 && den != "" && hodiny != "" && minuty != "") {
-        this.requestDates = true;
-        this.chybaTerminUzavretiaBoolean = false;
-        firebase.database().ref('stretnutie/' + this.stretnutieUID + "/UkoncenieHlasovania")
-          .set(h.value);
-      } else if (mesiac == dateTime.getMonth()+1 && den > dateTime.getDate() && hodiny != "" && minuty != "") {
-          this.requestDates = true;
-          this.chybaTerminUzavretiaBoolean = false;
-          firebase.database().ref('stretnutie/' + this.stretnutieUID + "/UkoncenieHlasovania")
-            .set(h.value);
-        } else if (den == dateTime.getDate() && hodiny > dateTime.getHours() && minuty != "") {
-            this.requestDates = true;
-            this.chybaTerminUzavretiaBoolean = false;
-            firebase.database().ref('stretnutie/' + this.stretnutieUID + "/UkoncenieHlasovania")
-              .set(h.value);
-          } else if (hodiny == dateTime.getHours() && minuty >= dateTime.getMinutes()){
-               this.requestDates = true;
-               this.chybaTerminUzavretiaBoolean = false;
-               firebase.database().ref('stretnutie/' + this.stretnutieUID + "/UkoncenieHlasovania")
-                .set(h.value);
-            }
+      this.requestDates = true;
+      this.chybaTerminUzavretiaBoolean = false;
+      firebase.database().ref('stretnutie/' + this.stretnutieUID + "/UkoncenieHlasovania")
+        .set(h.value);
+    } else if (mesiac == dateTime.getMonth()+1 && den > dateTime.getDate() && hodiny != "" && minuty != "") {
+      this.requestDates = true;
+      this.chybaTerminUzavretiaBoolean = false;
+      firebase.database().ref('stretnutie/' + this.stretnutieUID + "/UkoncenieHlasovania")
+        .set(h.value);
+    } else if (den == dateTime.getDate() && hodiny > dateTime.getHours() && minuty != "") {
+      this.requestDates = true;
+      this.chybaTerminUzavretiaBoolean = false;
+      firebase.database().ref('stretnutie/' + this.stretnutieUID + "/UkoncenieHlasovania")
+        .set(h.value);
+    } else if (hodiny == dateTime.getHours() && minuty >= dateTime.getMinutes()){
+      this.requestDates = true;
+      this.chybaTerminUzavretiaBoolean = false;
+      firebase.database().ref('stretnutie/' + this.stretnutieUID + "/UkoncenieHlasovania")
+        .set(h.value);
+    }
 
   }
 
@@ -579,10 +576,10 @@ export class StretnutieComponent implements OnInit {
       firebase.database().ref('stretnutie/' + this.stretnutieUID).update(f.value);
       firebase.database().ref('stretnutie/' + this.stretnutieUID + '/dates')
         .on("child_added", (date)=>{
-      firebase.database().ref('stretnutie/' + this.stretnutieUID)
-        .update({
-          ['casHlasovania']: date.val().date + ' ' + date.val().time
-        });
+          firebase.database().ref('stretnutie/' + this.stretnutieUID)
+            .update({
+              ['casHlasovania']: date.val().date + ' ' + date.val().time
+            });
         });
       firebase.database().ref('stretnutie/' + this.stretnutieUID)
         .on('value', (stdUdaje) => {
@@ -693,7 +690,7 @@ export class StretnutieComponent implements OnInit {
       .on("child_added", (personUdaje) => {
         firebase.database().ref('users/' + personUdaje.key + '/stretnutie/' + this.stretnutieUID)
           .remove();
-          });
+      });
     firebase.database().ref('stretnutie/' + this.stretnutieUID)
       .remove();
     this.resolveStr();
@@ -709,7 +706,7 @@ export class StretnutieComponent implements OnInit {
       .on("child_added", (dates) => {
         firebase.database().ref('stretnutie/' +  this.strHlasovanieUID  + '/dates/' + dates.key + '/hlasy/' + this.userUID)
           .remove()
-    });
+      });
     this.finalnyDatum(this.strHlasovanieUID);
     this.resolveStr();
   }
@@ -747,68 +744,64 @@ export class StretnutieComponent implements OnInit {
             .remove()
         });
     }
- }
+  }
 
- odstran(date){
-   firebase.database().ref('stretnutie/' + this.stretnutieUID + '/dates/' + date.uid)
-     .remove();
-   var index = this.rovnakyCas.indexOf(date.date +' '+ date.time);
-   if (index !== -1) {
-     this.rovnakyCas.splice(index, 1);
-   }
-   this.resolveDates();
- }
+  odstran(date){
+    firebase.database().ref('stretnutie/' + this.stretnutieUID + '/dates/' + date.uid)
+      .remove();
+    var index = this.rovnakyCas.indexOf(date.date +' '+ date.time);
+    if (index !== -1) {
+      this.rovnakyCas.splice(index, 1);
+    }
+    this.resolveDates();
+  }
 
- overVyhodenie(){
-    this.somVyhodeny = false;
+  overVyhodenie(){
     let OrgID = JSON.parse(localStorage.getItem('org')).uid;
-   let userID = JSON.parse(localStorage.getItem('user')).uid;
-   firebase.database().ref('users/' + userID)
-     .once("value", (userData)=> {
-       let user = userData.val();
-       user.uid = userID;
-       localStorage.removeItem('user');
-       localStorage.setItem('user', JSON.stringify(user));
-     });
-   let userOrg = JSON.parse(localStorage.getItem('user')).organizacie[OrgID];
-   if (JSON.parse(localStorage.getItem('user')).organizacie[OrgID] == null){
-     this.somVyhodeny = true;
-     this.router.navigate(['profil',]);
-   }
-   console.log(this.somVyhodeny);
- }
+    firebase.database().ref('users/' + this.userUID)
+      .once("value", (userData)=> {
+        let user = userData.val();
+        user.uid = this.userUID;
+        localStorage.removeItem('user');
+        localStorage.setItem('user', JSON.stringify(user));
+      });
+    let userOrg = JSON.parse(localStorage.getItem('user')).organizacie[OrgID];
+    if (JSON.parse(localStorage.getItem('user')).organizacie[OrgID] != null){
+      console.log('nie som vyhodeny');
+    }
+  }
 
- viacAkoDvaja(organizacia){
-   let tmp = [];
-   this.mozemVytoritStretnutie = false;
-   let userFunkcia = (JSON.parse(localStorage.getItem('user')).organizacie[organizacia].funkcia);
-   if (userFunkcia == 'owner') {
-     firebase.database().ref('organizacie/' + organizacia + '/clenovia')
-       .on("child_added", (userData) => {
-         firebase.database().ref('users/')
-           .on("child_added", (Data) => {
-             if (userData.key == Data.key) {
-               tmp.push(Data.key);
-             }
-           });
-       });
-   } else {
-     firebase.database().ref('organizacie/' + organizacia + '/clenovia')
-       .on("child_added", (userData) => {
-         firebase.database().ref('users/')
-           .on("child_added", (Data) => {
-             if (userData.key == Data.key) {
-               if(userData.val() == 'member') {
-                 tmp.push(Data.key);
-               }
-             }
-           });
-       });
-   }
-   if(tmp.length > 1 ){
-     this.mozemVytoritStretnutie = true;
-   }
- }
+  viacAkoDvaja(organizacia){
+    let tmp = [];
+    this.mozemVytoritStretnutie = false;
+    let userFunkcia = (JSON.parse(localStorage.getItem('user')).organizacie[organizacia].funkcia);
+    if (userFunkcia == 'owner') {
+      firebase.database().ref('organizacie/' + organizacia + '/clenovia')
+        .on("child_added", (userData) => {
+          firebase.database().ref('users/')
+            .on("child_added", (Data) => {
+              if (userData.key == Data.key) {
+                tmp.push(Data.key);
+              }
+            });
+        });
+    } else {
+      firebase.database().ref('organizacie/' + organizacia + '/clenovia')
+        .on("child_added", (userData) => {
+          firebase.database().ref('users/')
+            .on("child_added", (Data) => {
+              if (userData.key == Data.key) {
+                if(userData.val() == 'member') {
+                  tmp.push(Data.key);
+                }
+              }
+            });
+        });
+    }
+    if(tmp.length > 1 ){
+      this.mozemVytoritStretnutie = true;
+    }
+  }
 
 
 }

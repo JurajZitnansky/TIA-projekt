@@ -1,16 +1,16 @@
 <div *ngIf="homeBoolean" class="home-page">
   <div class="acc-kontainer">
 
-      <input type="radio" name="acc" id="acc1" checked>
-      <label for="acc1"> Organizácie</label>
-      <div class="acc-body">
-        <table>
-          <tr *ngFor="let organizacia of org">
-            <td>
-              <button (click)="orgUdaje(organizacia)">{{organizacia}}</button>
-            </td>
-          </tr>
-        </table>
+    <input type="radio" name="acc" id="acc1" checked>
+    <label for="acc1"> Organizácie</label>
+    <div class="acc-body">
+      <table>
+        <tr *ngFor="let organizacia of org">
+          <td>
+            <button (click)="orgUdaje(organizacia)">{{organizacia}}</button>
+          </td>
+        </tr>
+      </table>
 
     </div>
     <div>
@@ -20,7 +20,7 @@
         <table>
           <tr *ngFor="let stretnutie of str">
             <td>
-            <button (click)="strUdaje(stretnutie.uid)" >{{stretnutie.nazov}}</button>
+              <button (click)="strUdaje(stretnutie.uid)" >{{stretnutie.nazov}}</button>
             </td>
           </tr>
         </table>
@@ -53,31 +53,31 @@
     </tr>
   </table>
 
-<div class="orgclenovia" >
-  <div class = "table-wrapper-scroll-y my-custom-scrollbar">
-    <table class="členovia">
-      <tr>
-        <th colspan="3">Členovia organizácie</th>
-      </tr>
-      <tr>
-        <th>Osoba</th>
-        <th>E-mail</th>
-        <th>Funkcia</th>
-      </tr>
-      <tr *ngFor="let person of allPeople">
-        <td (click)="profil(person)" ><a>{{person.name}}</a></td>
-        <td (click)="profil(person)"> <a>{{person.mail}}</a></td>
-        <td>{{person.pozicia}}</td>
+  <div class="orgclenovia" >
+    <div class = "table-wrapper-scroll-y my-custom-scrollbar">
+      <table class="členovia">
+        <tr>
+          <th colspan="3">Členovia organizácie</th>
+        </tr>
+        <tr>
+          <th>Osoba</th>
+          <th>E-mail</th>
+          <th>Funkcia</th>
+        </tr>
+        <tr *ngFor="let person of allPeople">
+          <td (click)="profil(person)" ><a>{{person.name}}</a></td>
+          <td (click)="profil(person)"> <a>{{person.mail}}</a></td>
+          <td>{{person.pozicia}}</td>
 
-      </tr>
-    </table>
+        </tr>
+      </table>
+    </div>
+    <button *ngIf="isOwner" (click)="uprav()">Uprav</button>
+    <div class="buttony">
+      <button (click) = "stretnutia()">Stretnutia</button>
+      <button (click)="spat()">Späť</button>
+    </div>
   </div>
-  <button *ngIf="isOwner" (click)="uprav()">Uprav</button>
-  <div class="buttony">
-  <button (click) = "stretnutia()">Stretnutia</button>
-  <button (click)="spat()">Späť</button>
-  </div>
-</div>
   <button *ngIf="!(siJedinyOwner)" (click)="opusti()">Opustiť organizáciu</button>
   <div *ngIf="siJedinyOwner" class = 'jedinyOwner'>
     <p>Ak opustíš organizáciu, organizácia sa zruší, pretože si jediný owner</p>
@@ -88,56 +88,56 @@
 </div>
 
 <div *ngIf="pozriUzivatela" class="pozri-uzivatela-page">
-<table>
-  <tr>
-    <th><label for="name" id="name" class="bold">Login:</label></th>
-    <td> <label for="name">{{udajeOsoba.name}}</label></td>
-  </tr>
-  <tr>
-    <th><label for="mail" id="mail" class="bold">E-mail:</label></th>
-    <td><label for="mail">{{udajeOsoba.mail}}  </label></td>
-  </tr>
-  <tr>
-    <th><label for="pozicia" id="pozicia" class="bold">Pozícia :</label></th>
-    <td><label for="pozicia">{{udajeOsoba.pozicia}}</label></td>
-  </tr>
-  <tr>
-    <th><label for="meno" id="meno" class="bold">Meno:</label></th>
-    <td><label for="meno">{{udajeOsoba.meno}}  </label></td>
-  </tr>
-  <tr>
-    <th><label for="priezvisko" id="priezvisko" class="bold">Priezvisko :</label></th>
-    <td><label for="priezvisko">{{udajeOsoba.priezvisko}} </label></td>
-  </tr>
-  <tr>
-    <th><label for="tel" id="tel" class="bold">Telefon :</label></th>
-    <td><label for="tel">{{udajeOsoba.tel}}</label></td>
-  </tr>
-  <tr>
-    <th><label for="adresa" id="adresa" class="bold">Adresa :</label></th>
-    <td><label for="adresa">{{udajeOsoba.adresa}}</label></td>
-  </tr>
-</table>
+  <table>
+    <tr>
+      <th><label for="name" id="name" class="bold">Login:</label></th>
+      <td> <label for="name">{{udajeOsoba.name}}</label></td>
+    </tr>
+    <tr>
+      <th><label for="mail" id="mail" class="bold">E-mail:</label></th>
+      <td><label for="mail">{{udajeOsoba.mail}}  </label></td>
+    </tr>
+    <tr>
+      <th><label for="pozicia" id="pozicia" class="bold">Pozícia :</label></th>
+      <td><label for="pozicia">{{udajeOsoba.pozicia}}</label></td>
+    </tr>
+    <tr>
+      <th><label for="meno" id="meno" class="bold">Meno:</label></th>
+      <td><label for="meno">{{udajeOsoba.meno}}  </label></td>
+    </tr>
+    <tr>
+      <th><label for="priezvisko" id="priezvisko" class="bold">Priezvisko :</label></th>
+      <td><label for="priezvisko">{{udajeOsoba.priezvisko}} </label></td>
+    </tr>
+    <tr>
+      <th><label for="tel" id="tel" class="bold">Telefon :</label></th>
+      <td><label for="tel">{{udajeOsoba.tel}}</label></td>
+    </tr>
+    <tr>
+      <th><label for="adresa" id="adresa" class="bold">Adresa :</label></th>
+      <td><label for="adresa">{{udajeOsoba.adresa}}</label></td>
+    </tr>
+  </table>
   <button (click)="vratSa()">Back</button>
 </div>
 <div class="uprav-uzivatelov-page">
-    <table *ngIf="upravUzivatelovBoolean">
-      <tr>
-        <th colspan="3">Členovia organizácie</th>
-      </tr>
-      <tr>
-        <th>Osoba</th>
-        <th>Funkcia</th>
-        <th>Akcia</th>
-      </tr>
-      <tr *ngFor="let person of allPeople">
-        <td>{{person.name}}</td>
-        <td>{{person.pozicia}}</td>
-        <td>
-          <button (click)="odstran(person)">Vymaz</button>
-        </td>
-      </tr>
-    </table>
+  <table *ngIf="upravUzivatelovBoolean">
+    <tr>
+      <th colspan="3">Členovia organizácie</th>
+    </tr>
+    <tr>
+      <th>Osoba</th>
+      <th>Funkcia</th>
+      <th>Akcia</th>
+    </tr>
+    <tr *ngFor="let person of allPeople">
+      <td>{{person.name}}</td>
+      <td>{{person.pozicia}}</td>
+      <td>
+        <button (click)="odstran(person)">Vymaz</button>
+      </td>
+    </tr>
+  </table>
 
   <div *ngIf="upravUzivatelovBoolean" class="vyhladaj-uzivatelov">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -218,10 +218,10 @@
       </table>
     </div>
 
-<div *ngIf="!(jePoStretnutiBoolean)">
-  <button *ngIf="potvrdenaUcast === 'false'" (click)="potvrditUcast(udajeStr.uid)" >Potvrďiť účasť </button>
-</div>
-  <button (click)="back3()">Späť</button>
+    <div *ngIf="!(jePoStretnutiBoolean)">
+      <button *ngIf="potvrdenaUcast === 'false'" (click)="potvrditUcast(udajeStr.uid)" >Potvrďiť účasť </button>
+    </div>
+    <button (click)="back3()">Späť</button>
   </div>
   <button *ngIf="jePoStretnutiBoolean" (click)="vymazStr(udajeStr.uid)">X</button>
 </div>

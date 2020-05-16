@@ -70,7 +70,7 @@ export class HomeComponent implements OnInit {
   }
   OverOdkialIdem(){
     if (JSON.parse(localStorage.getItem('org')) !== null){
-        this.orgUdaje(JSON.parse(localStorage.getItem('org')).nazovOrganizacie);
+      this.orgUdaje(JSON.parse(localStorage.getItem('org')).nazovOrganizacie);
     }
   }
   resolveOrg(){
@@ -433,27 +433,27 @@ export class HomeComponent implements OnInit {
           });
       });
 
-   /*
-    firebase.database().ref('organizacie/' +  organizaciaUID + '/clenovia/' + userID)
-      .remove();*/
+    /*
+     firebase.database().ref('organizacie/' +  organizaciaUID + '/clenovia/' + userID)
+       .remove();*/
   }
   ano() {
     let OrgID = JSON.parse(localStorage.getItem('org')).uid;
     let userID = JSON.parse(localStorage.getItem('user')).uid;
     this.vymazOrg(OrgID);
-     firebase.database().ref('users/' + userID)
-       .once("value", (userData)=> {
-         let user = userData.val();
-         user.uid = userID;
-         localStorage.removeItem('user');
-         console.log(user);
-         localStorage.setItem('user', JSON.stringify(user));
-       });
-     localStorage.removeItem('org');
-     this.homeBoolean = true;
-     this.organizaciaBooelean = false;
-     this.resolveOrg();
-     this.resolveStr();
+    firebase.database().ref('users/' + userID)
+      .once("value", (userData)=> {
+        let user = userData.val();
+        user.uid = userID;
+        localStorage.removeItem('user');
+        console.log(user);
+        localStorage.setItem('user', JSON.stringify(user));
+      });
+    localStorage.removeItem('org');
+    this.homeBoolean = true;
+    this.organizaciaBooelean = false;
+    this.resolveOrg();
+    this.resolveStr();
   }
 
   stretnutia() {
@@ -554,24 +554,24 @@ export class HomeComponent implements OnInit {
                               .remove();
                           }
                         })
-                          if (stretnutieOrgUdaje.val().ucast != null){
-                            firebase.database().ref('stretnutie/' + stretnutieOrgUdaje.key + '/ucast/' + user)
-                              .remove();
-                          } else{
-                            firebase.database().ref('stretnutie/' + stretnutieOrgUdaje.key + '/dates')
-                              .on('child_added', (dateHlasy) => {
-                                console.log(dateHlasy.val().hlasy != null);
-                                if(dateHlasy.val().hlasy != null){
-                                  firebase.database().ref('stretnutie/' + stretnutieOrgUdaje.key + '/dates/' + dateHlasy.key + '/hlasy')
-                                    .on('child_added', (hlasy) => {
-                                     if(hlasy.key == user){
-                                       firebase.database().ref('stretnutie/' + stretnutieOrgUdaje.key + '/dates/' + dateHlasy.key + '/hlasy/' + hlasy.key)
-                                         .remove();
-                                     }
-                                    });
-                                }
-                              });
-                          }
+                      if (stretnutieOrgUdaje.val().ucast != null){
+                        firebase.database().ref('stretnutie/' + stretnutieOrgUdaje.key + '/ucast/' + user)
+                          .remove();
+                      } else{
+                        firebase.database().ref('stretnutie/' + stretnutieOrgUdaje.key + '/dates')
+                          .on('child_added', (dateHlasy) => {
+                            console.log(dateHlasy.val().hlasy != null);
+                            if(dateHlasy.val().hlasy != null){
+                              firebase.database().ref('stretnutie/' + stretnutieOrgUdaje.key + '/dates/' + dateHlasy.key + '/hlasy')
+                                .on('child_added', (hlasy) => {
+                                  if(hlasy.key == user){
+                                    firebase.database().ref('stretnutie/' + stretnutieOrgUdaje.key + '/dates/' + dateHlasy.key + '/hlasy/' + hlasy.key)
+                                      .remove();
+                                  }
+                                });
+                            }
+                          });
+                      }
 
                       firebase.database().ref('stretnutie/' + stretnutieOrgUdaje.key + '/clenovia/' + user)
                         .remove();
@@ -582,7 +582,7 @@ export class HomeComponent implements OnInit {
                             .remove();
                           console.log(strUserData.key + '  ' + stretnutieOrgUdaje.key);
                         });
-                       firebase.database().ref('stretnutie/' + stretnutieOrgUdaje.key )
+                      firebase.database().ref('stretnutie/' + stretnutieOrgUdaje.key )
                         .remove();
                     }
                   }
@@ -590,7 +590,7 @@ export class HomeComponent implements OnInit {
             }
           });
       });
-      this.resolveStr();
+    this.resolveStr();
   }
 
   vymazStr(stretnutie){
@@ -730,14 +730,14 @@ export class HomeComponent implements OnInit {
       .on('value',(strData) => {
         orgUID = strData.val().organizacia;
       });
-        firebase.database().ref('stretnutie/' + stretnutie + '/clenovia')
-          .on("child_added", (strUserData) => {
-            firebase.database().ref('organizacie/' + orgUID + '/clenovia/' + strUserData.key)
-              .on("value", (orgUserData) => {
-                firebase.database().ref('users/')
-                  .on("child_added", (Data) => {
-                    firebase.database().ref('stretnutie/' + stretnutie + '/ucast')
-                      .on("child_added", (ucastUser) => {
+    firebase.database().ref('stretnutie/' + stretnutie + '/clenovia')
+      .on("child_added", (strUserData) => {
+        firebase.database().ref('organizacie/' + orgUID + '/clenovia/' + strUserData.key)
+          .on("value", (orgUserData) => {
+            firebase.database().ref('users/')
+              .on("child_added", (Data) => {
+                firebase.database().ref('stretnutie/' + stretnutie + '/ucast')
+                  .on("child_added", (ucastUser) => {
                     if (strUserData.key == Data.key && ucastUser.key == Data.key) {
                       let udaje = {
                         "uid": Data.key,
@@ -753,10 +753,10 @@ export class HomeComponent implements OnInit {
                       tmp.push(udaje);
 
                     }
-                      });
                   });
               });
           });
+      });
 
 
     this.clenoviaStretnutia = tmp;
