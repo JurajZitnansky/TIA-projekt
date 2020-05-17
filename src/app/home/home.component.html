@@ -29,7 +29,7 @@
   </div>
 </div>
 
-<div *ngIf="organizaciaBooelean" class="home-org-page">
+<div *ngIf="organizaciaBooelean && !upravUzivatelovBoolean" class="home-org-page">
   <table class="tabulka-udaje">
     <tr>
       <th><label for="nazovOrganizacie" id="nazovOrganizacie" class="bold">Názov organizácie :</label></th>
@@ -72,7 +72,8 @@
         </tr>
       </table>
     </div>
-    <button *ngIf="isOwner" (click)="uprav()">Uprav</button>
+    <button *ngIf="isOwner" (click)="upravOrg()">Uprav údaje</button>
+    <button *ngIf="isOwner" (click)="uprav()">Uprav členov</button>
     <div class="buttony">
       <button (click) = "stretnutia()">Stretnutia</button>
       <button (click)="spat()">Späť</button>
@@ -84,6 +85,55 @@
     <p>Naozaj chcete odísť?</p>
     <button (click)="ano()">Áno</button>
     <button (click)="nie()">Nie</button>
+  </div>
+</div>
+
+<div *ngIf="zmenUdajeBoolean" class="zmena-udajov-page">
+  <div class="formular">
+    <form  (ngSubmit)="resolve(f)" #f="ngForm">
+      <div class="organizacia-udaje">
+      <input ngModel="{{organizaciaUdaje.nazovOrganizacie}}" name="nazovOrganizacie" type="text" maxlength="50" id="nazovOrganizacie" value="{{organizaciaUdaje.nazovOrganizacie}}">
+      <br>
+      <input ngModel="{{organizaciaUdaje.icoOrganizacie}} "  name="icoOrganizacie" type="text" maxlength="50" id="icoOrganizacie" value="{{organizaciaUdaje.icoOrganizacie}}">
+      <br>
+      <input ngModel="{{organizaciaUdaje.sidloOrganizacie}}" name="sidloOrganizacie" type="text"  maxlength="50" id="sidloOrganizacie" value="{{organizaciaUdaje.sidloOrganizacie}}">
+      <br>
+      <input ngModel="{{organizaciaUdaje.webOrgnaizacie}}" type="text" name="webOrgnaizacie" id="webOrgnaizacie" value="{{organizaciaUdaje.webOrgnaizacie}}">
+      <br>
+      </div>
+
+      <fieldset>
+        <legend>Typ organizacie</legend>
+        <div>
+
+          <label class="radio">
+            <input id="sro" name="typOrganizacie" type="radio" value="sro"  [checked]="organizaciaUdaje.typOrganizacie == 'sro'" ngModel="{{organizaciaUdaje.typOrganizacie}}" >
+            <span for="sro">s.r.o.</span>
+          </label>
+          <label class="radio">
+            <input id="as" name="typOrganizacie" type="radio" value="as" [checked]="organizaciaUdaje.typOrganizacie == 'as'" ngModel="{{organizaciaUdaje.typOrganizacie}}">
+            <span for="as">a.s.</span>
+          </label>
+          <label class="radio">
+            <input id="vos" name="typOrganizacie" type="radio" value="vos" [checked]="organizaciaUdaje.typOrganizacie == 'vos'" ngModel="{{organizaciaUdaje.typOrganizacie}}">
+            <span for="vos">v.o.s.</span>
+          </label>
+          <label class="radio">
+            <input id="ks" name="typOrganizacie" type="radio" value="ks" [checked]="organizaciaUdaje.typOrganizacie == 'ks'" ngModel="{{organizaciaUdaje.typOrganizacie}}">
+            <span for="ks">k.s.</span>
+          </label>
+          <label class="radio">
+            <input id="nc" name="typOrganizacie" type="radio"  value="iné" [checked]="organizaciaUdaje.typOrganizacie == 'iné'" ngModel="{{organizaciaUdaje.typOrganizacie}}">
+            <span for="nc">Niečo iné</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <p *ngIf="nazovSaPouziva">Názov organizácie sa už používa, zvoľte prosím iný</p>
+      <button name="submit" type="submit" value="Uloz zmeny">Save changes</button>
+      <button (click)="spat7()">Back</button>
+
+    </form>
   </div>
 </div>
 
@@ -134,7 +184,8 @@
       <td>{{person.name}}</td>
       <td>{{person.pozicia}}</td>
       <td>
-        <button (click)="odstran(person)">Vymaz</button>
+        <button *ngIf="!person.somToJa" (click)="odstran(person)">Vymaz</button>
+        <button (click)="zmenHodnostUzivatela(person.uid, person.opacnaRola)">{{person.opacnaRola}}</button>
       </td>
     </tr>
   </table>
@@ -179,22 +230,27 @@
 <div *ngIf="stretnutieBoolean" class="home-str-page">
   <table class="tabulka-udaje">
     <tr>
-      <th> <label for="nazovStretnutia" id="nazovStretnutia" class="bold">Názov stretnutia :</label></th>
+      <th> <label for="nazovOrganizacie" id="nazovOrganizacie" class="bold">Organizácia:</label></th>
+      <td>  <label for="nazovOrganizacie">{{udajeStr.nazovOrganizacie}}  </label></td>
+    </tr>
+    <tr>
+      <th> <label for="nazovStretnutia" id="nazovStretnutia" class="bold">Názov stretnutia:</label></th>
       <td>  <label for="nazovStretnutia">{{udajeStr.nazovStretnutia}}  </label></td>
     </tr>
     <tr>
-      <th> <label for="miestoStretnutia" id="miestoStretnutia"class="bold">Miesto stretnutia :</label></th>
+      <th> <label for="miestoStretnutia" id="miestoStretnutia"class="bold">Miesto stretnutia:</label></th>
       <td> <label for="miestoStretnutia">{{udajeStr.miestoStretnutia}}  </label></td>
     </tr>
     <tr>
-      <th><label for="popisStretnutia" id="popisStretnutia" class="bold">Popis stretnutia :</label></th>
-      <td class = "popis"><label for="popisStretnutia">{{udajeStr.popisStretnutia}}   </label></td>
-    </tr>
-    <tr>
-      <th> <label for="casStretnutia" id="casStretnutia" class="bold">Cas stretnutia :</label></th>
+      <th> <label for="casStretnutia" id="casStretnutia" class="bold">Cas stretnutia:</label></th>
       <td> <label for="casStretnutia">{{udajeStr.casHlasovania}}</label></td>
     </tr>
   </table>
+
+  <div class="popis">
+    <p>Popis stretnutia:</p>
+    <textarea disabled rows="10" cols="45" for="popisStretnutia">{{udajeStr.popisStretnutia}}  </textarea>
+  </div>
 
   <div class="strClenovia" >
     <div class = "table-wrapper-scroll-y my-custom-scrollbar">
@@ -211,8 +267,8 @@
         <tr *ngFor="let person of clenoviaStretnutia">
           <td><input type="checkbox" [checked]="person.check == 'true'" disabled></td>
 
-          <td (click)="profil(person)" ><a>{{person.name}}</a></td>
-          <td (click)="profil(person)"> <a>{{person.mail}}</a></td>
+          <td (click)="profil2(person)" ><a>{{person.name}}</a></td>
+          <td (click)="profil2(person)"> <a>{{person.mail}}</a></td>
           <td>{{person.pozicia}}</td>
         </tr>
       </table>
@@ -223,5 +279,53 @@
     </div>
     <button (click)="back3()">Späť</button>
   </div>
-  <button *ngIf="jePoStretnutiBoolean" (click)="vymazStr(udajeStr.uid)">X</button>
+  <button *ngIf="jePoStretnutiBoolean" (click)="vymazStr(udajeStr.uid)">Vymaž stretnutie</button>
+</div>
+
+<div *ngIf="somVyhodeny"  class="vyhodenie-page">
+  <div class="form">
+  <p>Bol si vylúčený z organizácie</p>
+<button (click)="back6()">Back</button>
+  </div>
+</div>
+
+<div *ngIf="organizaciaZrusena"  class="vyhodenie-page">
+  <div class="form">
+    <p>Organizácia bola zrušená</p>
+    <button (click)="back6()">Back</button>
+  </div>
+</div>
+
+<div *ngIf="pozriUzivatelaStr" class="pozri-uzivatela-page">
+  <table>
+    <tr>
+      <th><label for="name" id="name" class="bold">Login:</label></th>
+      <td> <label for="name">{{udajeOsoba.name}}</label></td>
+    </tr>
+    <tr>
+      <th><label for="mail" id="mail" class="bold">E-mail:</label></th>
+      <td><label for="mail">{{udajeOsoba.mail}}  </label></td>
+    </tr>
+    <tr>
+      <th><label for="pozicia" id="pozicia" class="bold">Pozícia :</label></th>
+      <td><label for="pozicia">{{udajeOsoba.pozicia}}</label></td>
+    </tr>
+    <tr>
+      <th><label for="meno" id="meno" class="bold">Meno:</label></th>
+      <td><label for="meno">{{udajeOsoba.meno}}  </label></td>
+    </tr>
+    <tr>
+      <th><label for="priezvisko" id="priezvisko" class="bold">Priezvisko :</label></th>
+      <td><label for="priezvisko">{{udajeOsoba.priezvisko}} </label></td>
+    </tr>
+    <tr>
+      <th><label for="tel" id="tel" class="bold">Telefon :</label></th>
+      <td><label for="tel">{{udajeOsoba.tel}}</label></td>
+    </tr>
+    <tr>
+      <th><label for="adresa" id="adresa" class="bold">Adresa :</label></th>
+      <td><label for="adresa">{{udajeOsoba.adresa}}</label></td>
+    </tr>
+  </table>
+  <button (click)="vratSa2()">Back</button>
 </div>
