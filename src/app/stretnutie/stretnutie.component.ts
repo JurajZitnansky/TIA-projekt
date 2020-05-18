@@ -87,6 +87,7 @@ export class StretnutieComponent implements OnInit {
     this.userUID = JSON.parse(localStorage.getItem('user')).uid;
     this.organizaciaUID = JSON.parse(localStorage.getItem('org')).uid;
     this.viacAkoDvaja(this.organizaciaUID);
+    this.overVyhodenie();
     firebase.database().ref('stretnutie')
       .on('child_added', (strData)=>{
         if((strData.val().organizacia == this.organizaciaUID) && strData.val().clenovia[this.userUID] != null ){
@@ -108,6 +109,9 @@ export class StretnutieComponent implements OnInit {
   }
 
   strUdaje(stretnutie){
+    this.overVyhodenie();
+    if(this.organizaciaZrusena != true) {
+      if (this.somVyhodeny != true) {
         this.stretnutieBoolean = true;
         firebase.database().ref('stretnutie/' + stretnutie)
           .on('value', (dataStr) => {
@@ -116,6 +120,8 @@ export class StretnutieComponent implements OnInit {
             console.log(this.udajeStr);
           });
         this.naplnClenov(stretnutie);
+      }
+    }
   }
 
   naplnClenov(stretnutie){
@@ -139,6 +145,9 @@ export class StretnutieComponent implements OnInit {
   }
 
   zahlasovaneStr(stretnutie){
+    this.overVyhodenie();
+    if(this.organizaciaZrusena != true) {
+      if (this.somVyhodeny != true) {
         this.pozretieHlasovania = true;
         this.uzJePoHlasovani = false;
         this.strHlasovanieUID = stretnutie;
@@ -150,6 +159,8 @@ export class StretnutieComponent implements OnInit {
             }
           })
         this.resolveDatesHlasovania(stretnutie);
+      }
+    }
   }
 
   resolveDatesHlasovania(stretnutie){
@@ -176,6 +187,9 @@ export class StretnutieComponent implements OnInit {
   }
 
   hlasuj(stretnutie){
+    this.overVyhodenie();
+    if(this.organizaciaZrusena != true) {
+      if (this.somVyhodeny != true) {
         this.hlasovanie = true;
         this.uzJePoHlasovani = false;
         this.strHlasovanieUID = stretnutie;
@@ -187,6 +201,8 @@ export class StretnutieComponent implements OnInit {
             }
           })
         this.resolveDatesNaHlasovanie(stretnutie);
+      }
+    }
   }
 
   resolveDatesNaHlasovanie(stretnutie){
@@ -218,6 +234,9 @@ export class StretnutieComponent implements OnInit {
   }
 
   zahlasuj(){
+    this.overVyhodenie();
+    if(this.organizaciaZrusena != true) {
+      if (this.somVyhodeny != true) {
         this.poTermine(this.strHlasovanieUID);
         if (this.ukoncenieHlasovania != true) {
 
@@ -251,6 +270,8 @@ export class StretnutieComponent implements OnInit {
           this.finalnyDatum(this.strHlasovanieUID);
           this.resolveStr();
         }
+      }
+    }
   }
 
   poTermine(stretnutie){
@@ -681,17 +702,27 @@ export class StretnutieComponent implements OnInit {
   }
 
   pridajStretnutieButton(){
+    this.overVyhodenie();
+    if(this.organizaciaZrusena != true) {
+      if (this.somVyhodeny != true) {
         this.pridajStretnutieBoolean = true;
         this.asponDvajaBoolean = false;
         this.chybaNazovBoolean = false;
         this.chybaTerminStretnutia = false;
         this.naplnAllPeople(JSON.parse(localStorage.getItem('org')).uid);
         this.stretnutieUID = firebase.database().ref('stretnutie/').push('').key;
+      }
+    }
   }
 
   back() {
+    this.overVyhodenie();
+    if(this.organizaciaZrusena != true) {
+      if (this.somVyhodeny != true) {
         this.router.navigate(['home',]);
       }
+    }
+  }
 
   back2() {
     this.pridajStretnutieBoolean = false;
@@ -707,11 +738,19 @@ export class StretnutieComponent implements OnInit {
     this.resolveStr();
   }
   back3() {
+    this.overVyhodenie();
+    if(this.organizaciaZrusena != true) {
+      if (this.somVyhodeny != true) {
         this.stretnutieBoolean = false;
         this.finalnyDatum(this.stretnutieUID);
         this.resolveStr();
+      }
+    }
   }
   back4() {
+    this.overVyhodenie();
+    if(this.organizaciaZrusena != true) {
+      if (this.somVyhodeny != true) {
         this.hlasovanie = false;
         firebase.database().ref('stretnutie/' + this.strHlasovanieUID + '/dates/')
           .on("child_added", (dates) => {
@@ -720,12 +759,19 @@ export class StretnutieComponent implements OnInit {
           });
         this.finalnyDatum(this.strHlasovanieUID);
         this.resolveStr();
+      }
+    }
   }
 
   back5() {
-    this.pozretieHlasovania = false;
-    this.finalnyDatum(this.stretnutieUID);
-    this.resolveStr();
+    this.overVyhodenie();
+    if(this.organizaciaZrusena != true) {
+      if (this.somVyhodeny != true) {
+        this.pozretieHlasovania = false;
+        this.finalnyDatum(this.stretnutieUID);
+        this.resolveStr();
+      }
+    }
   }
 
   checkbox(person){
