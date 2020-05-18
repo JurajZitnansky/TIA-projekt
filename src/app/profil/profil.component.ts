@@ -78,7 +78,6 @@ export class ProfilComponent implements OnInit {
   }
 
   resolve(f : NgForm){
-    console.log(f.value);
     firebase.database().ref('users/' + this.user.uid)
       .update(f.value)
       .then(()=>{

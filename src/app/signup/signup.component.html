@@ -19,6 +19,12 @@
       <div *ngIf="zlyEmail">
         <p>Zadaný email je zlý</p>
       </div>
+      <div *ngIf="zleHeslo">
+        <p>Heslo musí mať 6-15 znakov a aspoň jedno písmeno a jedno čislo</p>
+      </div>
+      <div *ngIf="prazdnyLogin">
+        <p>Musíte zadať Login</p>
+      </div>
       <div *ngIf="nazovUserBoolean">
         <p>Zadaný login sa už používa zvolte prosím iný</p>
       </div>

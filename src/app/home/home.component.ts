@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as firebase from 'firebase';
 import {Router} from "@angular/router";
+import {NgForm} from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -41,6 +42,14 @@ export class HomeComponent implements OnInit {
   potvrdenaUcast: boolean;
   jePoStretnutiBoolean: boolean;
   skoncenieStretnutiaDateTime : any = {};
+  somToJa: boolean;
+  somVyhodeny: boolean;
+  zmenUdajeBoolean: boolean;
+  nazovSaPouziva: boolean;
+  pozriUzivatelaStr: boolean;
+  organizaciaResolveUID: any = {};
+  pocetClenovOrg : number;
+  organizaciaZrusena: boolean;
 
 
   constructor(private router : Router) {
@@ -59,13 +68,20 @@ export class HomeComponent implements OnInit {
     this.stretnutieBoolean = false;
     this.ukoncenieHlasovania = false;
     this.jePoStretnutiBoolean = false;
+    this.somToJa = false;
+    this.somVyhodeny = false;
+    this.zmenUdajeBoolean = false;
+    this.nazovSaPouziva = false;
+    this.pozriUzivatelaStr = false;
+    this.organizaciaZrusena = false;
   }
 
   ngOnInit() {
-    this.OverOdkialIdem();
-    this.resolveOrg();
-    this.finalnyDatum2();
-    this.resolveStr();
+      this.OverOdkialIdem();
+      this.resolveOrg();
+      this.finalnyDatum2();
+      this.resolveStr();
+
 
   }
   OverOdkialIdem(){
@@ -89,6 +105,7 @@ export class HomeComponent implements OnInit {
     this.organizaciaUdaje= JSON.parse(localStorage.getItem('org'));
   }
   orgUdaje(organizacia){
+    this.pocetClenovOrg = 0;
     this.organizaciaBooelean = true;
     this.homeBoolean = false;
     this.isOwner = false;
@@ -109,8 +126,11 @@ export class HomeComponent implements OnInit {
     this.Owner(userID);
     this.resolveOrganizaciaUdaje();
     this.naplnAllPeople(this.udaje.uid);
-
-
+    let OrgID = JSON.parse(localStorage.getItem('org')).uid;
+      firebase.database().ref('organizacie/' + OrgID + '/clenovia' )
+        .on('value', (clen) => {
+          this.pocetClenovOrg = clen.numChildren();
+        });
   }
 
   Owner(userID){
@@ -125,6 +145,60 @@ export class HomeComponent implements OnInit {
       });
   }
 
+  upravOrg(){
+    this.overVyhodenie();
+      if (this.somVyhodeny != true) {
+        this.zmenUdajeBoolean = true;
+        this.organizaciaBooelean = false;
+      }
+  }
+
+  spat7() {
+    this.overVyhodenie();
+      if (this.somVyhodeny != true) {
+        this.zmenUdajeBoolean = false;
+        this.organizaciaBooelean = true;
+      }
+  }
+
+  resolve(f : NgForm){
+    this.overVyhodenie();
+      if (this.somVyhodeny != true) {
+        let OrgID = JSON.parse(localStorage.getItem('org')).uid;
+        let userID = JSON.parse(localStorage.getItem('user')).uid;
+        let nazvyOrg = [];
+        this.nazovSaPouziva = false;
+        firebase.database().ref('organizacie')
+          .on('child_added', (orgDataHelp) => {
+            if (orgDataHelp.key != OrgID) {
+              nazvyOrg.push(orgDataHelp.val().nazovOrganizacie);
+            }
+          });
+        console.log(nazvyOrg);
+        if (nazvyOrg.includes(f.value.nazovOrganizacie)) {
+          this.nazovSaPouziva = true;
+        } else {
+          firebase.database().ref('organizacie/' + OrgID)
+            .update(f.value)
+            .then(() => {
+              firebase.database().ref('organizacie/' + OrgID)
+                .once("value", (orgData) => {
+                  let org = orgData.val();
+                  org.uid = OrgID;
+                  localStorage.removeItem('org');
+                  localStorage.setItem('org', JSON.stringify(org));
+                  this.zmenUdajeBoolean = false;
+                  this.organizaciaBooelean = true;
+                  this.orgUdaje(orgData.val().nazovOrganizacie);
+                })
+            })
+          firebase.database().ref('users/' + userID + '/organizacie/' + OrgID)
+            .update({
+              ['nazovOrganizacie']: f.value.nazovOrganizacie
+            });
+        }
+      }
+  }
 
   spat(){
     this.organizaciaBooelean = false;
@@ -167,11 +241,14 @@ export class HomeComponent implements OnInit {
   }
 
   uprav(){
-    this.upravUzivatelovBoolean = true;
-    this.organizaciaBooelean = false;
-    this.siJedinyOwner = false;
-    let OrgID = JSON.parse(localStorage.getItem('org')).uid;
-    this.naplnClenovOrganizacie(OrgID);
+    this.overVyhodenie();
+    if (this.somVyhodeny != true) {
+      this.upravUzivatelovBoolean = true;
+      this.organizaciaBooelean = false;
+      this.siJedinyOwner = false;
+      let OrgID = JSON.parse(localStorage.getItem('org')).uid;
+      this.naplnClenovOrganizacie(OrgID);
+    }
   }
 
   vymaz(organizaciaUID) {
@@ -183,66 +260,78 @@ export class HomeComponent implements OnInit {
   }
 
   opusti() {
-    this.siJedinyOwner = false;
-    let OrgID = JSON.parse(localStorage.getItem('org')).uid;
-    let userFunkcia = (JSON.parse(localStorage.getItem('user')).organizacie[OrgID].funkcia);
-    if (userFunkcia !== 'owner'){
-      let userID = JSON.parse(localStorage.getItem('user')).uid;
-      this.vymaz(OrgID);
-      this.vymazUserStr(userID);
-      firebase.database().ref('users/' + userID)
-        .once("value", (userData)=> {
-          let user = userData.val();
-          user.uid = userID;
-          localStorage.removeItem('user');
-          console.log(user);
-          localStorage.setItem('user', JSON.stringify(user));
-        });
-      localStorage.removeItem('org');
-      this.homeBoolean = true;
-      this.organizaciaBooelean = false;
-      this.resolveOrg();
-      this.resolveStr();
-    } else {
-      let funkcieOrg = [];
-      firebase.database().ref('organizacie/' + OrgID + '/clenovia')
-        .on('child_added', (idOrgData) => {
-          if(idOrgData.val() == 'owner') {
-            funkcieOrg.push(idOrgData.val());
+        this.siJedinyOwner = false;
+        let OrgID = JSON.parse(localStorage.getItem('org')).uid;
+        let userFunkcia = (JSON.parse(localStorage.getItem('user')).organizacie[OrgID].funkcia);
+        if (userFunkcia !== 'owner') {
+          let userID = JSON.parse(localStorage.getItem('user')).uid;
+          this.vymaz(OrgID);
+          this.vymazUserStr(userID);
+          firebase.database().ref('users/' + userID)
+            .once("value", (userData) => {
+              let user = userData.val();
+              user.uid = userID;
+              localStorage.removeItem('user');
+              console.log(user);
+              localStorage.setItem('user', JSON.stringify(user));
+            });
+          localStorage.removeItem('org');
+          this.homeBoolean = true;
+          this.organizaciaBooelean = false;
+          this.resolveOrg();
+          this.resolveStr();
+        } else {
+          let funkcieOrg = [];
+          firebase.database().ref('organizacie/' + OrgID + '/clenovia')
+            .on('child_added', (idOrgData) => {
+              if (idOrgData.val() == 'owner') {
+                funkcieOrg.push(idOrgData.val());
+              }
+            });
+          //console.log(funkcieOrg.length);
+          if (funkcieOrg.length > 1) {
+            let userID = JSON.parse(localStorage.getItem('user')).uid;
+            this.vymaz(OrgID);
+            this.vymazUserStr(userID);
+            firebase.database().ref('users/' + userID)
+              .once("value", (userData) => {
+                let user = userData.val();
+                user.uid = userID;
+                localStorage.removeItem('user');
+                console.log(user);
+                localStorage.setItem('user', JSON.stringify(user));
+              });
+            localStorage.removeItem('org');
+            this.homeBoolean = true;
+            this.organizaciaBooelean = false;
+            this.resolveOrg();
+            this.resolveStr();
+          } else {
+            this.siJedinyOwner = true;
+            console.log('bohuzial si jediny owner');
           }
-        });
-      //console.log(funkcieOrg.length);
-      if (funkcieOrg.length > 1) {
-        let userID = JSON.parse(localStorage.getItem('user')).uid;
-        this.vymaz(OrgID);
-        this.vymazUserStr(userID);
-        firebase.database().ref('users/' + userID)
-          .once("value", (userData)=> {
-            let user = userData.val();
-            user.uid = userID;
-            localStorage.removeItem('user');
-            console.log(user);
-            localStorage.setItem('user', JSON.stringify(user));
-          });
-        localStorage.removeItem('org');
-        this.homeBoolean = true;
-        this.organizaciaBooelean = false;
-        this.resolveOrg();
-        this.resolveStr();
-      } else {
-        this.siJedinyOwner = true;
-        console.log('bohuzial si jediny owner');
-      }
-    }
+        }
   }
 
   naplnClenovOrganizacie(organizacia) {
     let tmp = [];
+    let userID = JSON.parse(localStorage.getItem('user')).uid;
     firebase.database().ref('organizacie/' + organizacia + '/clenovia')
       .on("child_added", (userData) => {
         firebase.database().ref('users/')
           .on("child_added", (Data) => {
             if (userData.key == Data.key) {
+              this.somToJa = false;
+              let opacnaRola = {};
+              if(userData.val() == 'owner'){
+                opacnaRola = "member";
+              } else {
+                opacnaRola = "owner";
+              }
+              if(userID == userData.key){
+                this.somToJa = true;
+              }
+              console.log(this.somToJa);
               let udaje = {
                 "name": Data.val().name,
                 "mail": Data.val().mail,
@@ -251,7 +340,9 @@ export class HomeComponent implements OnInit {
                 "priezvisko": Data.val().priezvisko,
                 "adresa": Data.val().adresa,
                 "tel": Data.val().telefon,
-                "uid": Data.key
+                "uid": Data.key,
+                "somToJa": this.somToJa,
+                "opacnaRola": opacnaRola
               };
               tmp.push(udaje);
             }
@@ -262,130 +353,171 @@ export class HomeComponent implements OnInit {
   }
 
   odstran(person) {
-    let orgID = JSON.parse(localStorage.getItem('org')).uid;
-    firebase.database().ref('users/' + person.uid + '/organizacie/' + orgID)
-      .remove();
-    firebase.database().ref('organizacie/' + orgID + '/clenovia/' + person.uid)
-      .remove();
-    this.naplnClenovOrganizacie(orgID);
-    this.vymazUserStr(person.uid);
+    this.overVyhodenie();
+    if (this.somVyhodeny != true) {
+      let orgID = JSON.parse(localStorage.getItem('org')).uid;
+      firebase.database().ref('users/' + person.uid + '/organizacie/' + orgID)
+        .remove();
+      firebase.database().ref('organizacie/' + orgID + '/clenovia/' + person.uid)
+        .remove();
+      this.naplnClenovOrganizacie(orgID);
+      this.vymazUserStr(person.uid);
+    }
   }
 
   vyhladaj(str) {
-    let pole = [];
-    this.uzJeClen = false;
-    this.najdenyUzivatel = false;
-    this.neexistujeOwner = false;
-    this.neexistuje = false;
-    const orgID =  JSON.parse(localStorage.getItem('org')).uid;
-    firebase.database().ref('organizacie/' + orgID + '/clenovia')
-      .on('child_added', (clenoviaOrg) => {
-        pole.push(clenoviaOrg.key);
-      });
-    if (str.includes('@')) {
-      firebase.database().ref('users')
-        .on('child_added', (uzivateliaApp) => {
-          if (str === uzivateliaApp.val().mail) {
-            this.neexistuje = false;
-            if (pole.includes(uzivateliaApp.key)) {
-              this.uzJeClen = true;
-            } else {
-              this.najdenyUzivatel = true;
-              this.login = uzivateliaApp.val().name;
-              this.email = str;
-              this.najdenyUzivatelID = uzivateliaApp.key;
-            }
-          } else {
-            this.neexistuje = true;
-          }
+    this.overVyhodenie();
+    if(this.somVyhodeny != true) {
+      let pole = [];
+      this.uzJeClen = false;
+      this.najdenyUzivatel = false;
+      this.neexistujeOwner = false;
+      this.neexistuje = false;
+      const orgID = JSON.parse(localStorage.getItem('org')).uid;
+      firebase.database().ref('organizacie/' + orgID + '/clenovia')
+        .on('child_added', (clenoviaOrg) => {
+          pole.push(clenoviaOrg.key);
         });
-    } else {
-      firebase.database().ref('users')
-        .on('child_added', (uzivateliaApp) => {
-          if (str === uzivateliaApp.val().name) {
-            this.neexistuje = false;
-            if (pole.includes(uzivateliaApp.key)) {
-              this.uzJeClen = true;
+      if (str.includes('@')) {
+        firebase.database().ref('users')
+          .on('child_added', (uzivateliaApp) => {
+            if (str === uzivateliaApp.val().mail) {
+              this.neexistuje = false;
+              if (pole.includes(uzivateliaApp.key)) {
+                this.uzJeClen = true;
+              } else {
+                this.najdenyUzivatel = true;
+                this.login = uzivateliaApp.val().name;
+                this.email = str;
+                this.najdenyUzivatelID = uzivateliaApp.key;
+              }
             } else {
-              this.najdenyUzivatel = true;
-              this.login = str;
-              this.email = uzivateliaApp.val().mail;
-              this.najdenyUzivatelID = uzivateliaApp.key;
+              this.neexistuje = true;
             }
-          } else {
-            this.neexistuje = true;
-          }
-        });
+          });
+      } else {
+        firebase.database().ref('users')
+          .on('child_added', (uzivateliaApp) => {
+            if (str === uzivateliaApp.val().name) {
+              this.neexistuje = false;
+              if (pole.includes(uzivateliaApp.key)) {
+                this.uzJeClen = true;
+              } else {
+                this.najdenyUzivatel = true;
+                this.login = str;
+                this.email = uzivateliaApp.val().mail;
+                this.najdenyUzivatelID = uzivateliaApp.key;
+              }
+            } else {
+              this.neexistuje = true;
+            }
+          });
+      }
+      this.naplnClenovOrganizacie(orgID);
     }
   }
+
+  zmenHodnostUzivatela(person, str) {
+    this.overVyhodenie();
+    if (this.somVyhodeny != true) {
+      this.homeBoolean = false;
+      let orgID = JSON.parse(localStorage.getItem('org')).uid;
+      firebase.database().ref('users/' + person + '/organizacie/' + orgID)
+        .update({
+          ['funkcia']: str
+        });
+      firebase.database().ref('organizacie/' + orgID + '/clenovia')
+        .update({
+          [person]: str
+        });
+      this.naplnClenovOrganizacie(orgID);
+    }
+  }
+
   pridajUzivatela(person, str){
-    let orgID = JSON.parse(localStorage.getItem('org')).uid
-    this.neexistujeOwner = false;
-    const udaje = {
-      'funkcia': str,
-      'nazovOrganizacie': JSON.parse(localStorage.getItem('org')).nazovOrganizacie,
-      //'nazovOrganizacie' : this.idOrgName,
-    };
-    firebase.database().ref('users/' + person + '/organizacie')
-      .update({
-        [orgID] : udaje
-      });
-    firebase.database().ref('organizacie/' + orgID + '/clenovia')
-      .update({
-        [person] : str
-      });
-    this.naplnClenovOrganizacie(orgID);
+    this.overVyhodenie();
+    if (this.somVyhodeny != true) {
+      let orgID = JSON.parse(localStorage.getItem('org')).uid
+      this.neexistujeOwner = false;
+      const udaje = {
+        'funkcia': str,
+        'nazovOrganizacie': JSON.parse(localStorage.getItem('org')).nazovOrganizacie,
+        //'nazovOrganizacie' : this.idOrgName,
+      };
+      firebase.database().ref('users/' + person + '/organizacie')
+        .update({
+          [orgID]: udaje
+        });
+      firebase.database().ref('organizacie/' + orgID + '/clenovia')
+        .update({
+          [person]: str
+        });
+      this.naplnClenovOrganizacie(orgID);
+    }
   }
 
   potvrd() {
-    this.isOwner = false;
-    let funkcieOrg = [];
-    let IDsOrg = [];
-    let orgID = JSON.parse(localStorage.getItem('org')).uid;
-    firebase.database().ref('organizacie/' + orgID + '/clenovia')
-      .on('child_added', (idOrgData) => {
-        IDsOrg.push(idOrgData.key);
-        funkcieOrg.push(idOrgData.val());
-      });
-    let userID = JSON.parse(localStorage.getItem('user')).uid;
-    firebase.database().ref('users/' + userID)
-      .once("value", (userData)=> {
-        let user = userData.val();
-        user.uid = userID;
-        localStorage.removeItem('user');
-        //console.log(user);
-        localStorage.setItem('user', JSON.stringify(user));
-      });
-    if(funkcieOrg.includes('owner')) {
-      this.upravUzivatelovBoolean = false;
-      this.Owner(userID);
-      if(IDsOrg.includes(userID)){
-        this.organizaciaBooelean = true;
+    this.overVyhodenie();
+    if (this.somVyhodeny != true) {
+      this.isOwner = false;
+      let funkcieOrg = [];
+      let IDsOrg = [];
+      let orgID = JSON.parse(localStorage.getItem('org')).uid;
+      firebase.database().ref('organizacie/' + orgID + '/clenovia')
+        .on('child_added', (idOrgData) => {
+          IDsOrg.push(idOrgData.key);
+          funkcieOrg.push(idOrgData.val());
+        });
+      let userID = JSON.parse(localStorage.getItem('user')).uid;
+      firebase.database().ref('users/' + userID)
+        .once("value", (userData) => {
+          let user = userData.val();
+          user.uid = userID;
+          localStorage.removeItem('user');
+          //console.log(user);
+          localStorage.setItem('user', JSON.stringify(user));
+        });
+      if (funkcieOrg.includes('owner')) {
+        this.upravUzivatelovBoolean = false;
+        this.Owner(userID);
+        if (IDsOrg.includes(userID)) {
+          this.organizaciaBooelean = true;
+        } else {
+          this.homeBoolean = true;
+          this.resolveOrg();
+        }
       } else {
-        this.homeBoolean = true;
-        this.resolveOrg();
+        this.neexistujeOwner = true;
       }
-    } else {
-      this.neexistujeOwner = true;
     }
   }
 
   profil(person) {
-    this.pozriUzivatela = true;
-    if(JSON.parse(localStorage.getItem('org')) == null){
-      this.stretnutieBoolean = false;
-    } else {
-      this.organizaciaBooelean = false;
-      this.siJedinyOwner = false;
+    this.overVyhodenie();
+    if(this.organizaciaZrusena != true) {
+      if (this.somVyhodeny != true) {
+        this.pozriUzivatela = true;
+        if (JSON.parse(localStorage.getItem('org')) == null) {
+          this.stretnutieBoolean = false;
+        } else {
+          this.organizaciaBooelean = false;
+          this.siJedinyOwner = false;
+        }
+        this.udajeOsoba = person;
+      }
     }
-    this.udajeOsoba = person;
   }
   vratSa() {
-    this.pozriUzivatela = false;
-    if(JSON.parse(localStorage.getItem('org')) == null){
-      this.stretnutieBoolean = true;
-    } else {
-      this.organizaciaBooelean = true;
+    this.overVyhodenie();
+    if(this.organizaciaZrusena != true) {
+      if (this.somVyhodeny != true) {
+        this.pozriUzivatela = false;
+        if (JSON.parse(localStorage.getItem('org')) == null) {
+          this.stretnutieBoolean = true;
+        } else {
+          this.organizaciaBooelean = true;
+        }
+      }
     }
   }
 
@@ -457,7 +589,12 @@ export class HomeComponent implements OnInit {
   }
 
   stretnutia() {
-    this.router.navigate(['stretnutie',]);
+    this.overVyhodenie();
+    if(this.organizaciaZrusena != true) {
+      if (this.somVyhodeny != true) {
+        this.router.navigate(['stretnutie',]);
+      }
+    }
   }
 
 
@@ -492,14 +629,21 @@ export class HomeComponent implements OnInit {
     this.stretnutieBoolean = true;
     this.homeBoolean = false;
     this.potvrdenaUcast = false;
+
     firebase.database().ref('stretnutie/' + stretnutie)
       .on('value', (dataStr)=>{
+        firebase.database().ref('organizacie/' + dataStr.val().organizacia)
+          .on('value', (orgNazov) => {
         this.udajeStr = dataStr.val();
         this.udajeStr.uid = stretnutie;
+        this.udajeStr.nazovOrganizacie = orgNazov.val().nazovOrganizacie;
         this.potvrdenaUcast = dataStr.val().ucast[this.userUID];
+          });
       });
     this.naplnClenovStretnutia(stretnutie);
     this.jePoStretnuti(stretnutie);
+
+
   }
 
   jePoStretnuti(stretnutie){
@@ -508,7 +652,7 @@ export class HomeComponent implements OnInit {
       .on('value', (datum)=> {
         this.skoncenieStretnutiaDateTime = datum.val();
       });
-    console.log(this.skoncenieStretnutiaDateTime);
+   // console.log(this.skoncenieStretnutiaDateTime);
     let dateTime = new Date();
     let rok = this.skoncenieStretnutiaDateTime.substring(0,4);
     let mesiac = this.skoncenieStretnutiaDateTime.substring(5,7);
@@ -594,31 +738,31 @@ export class HomeComponent implements OnInit {
   }
 
   vymazStr(stretnutie){
-    let tmp = [];
-    firebase.database().ref('stretnutie/' + stretnutie + '/clenovia')
-      .on("child_added", (strUserData) => {
-        firebase.database().ref('users/' + strUserData.key + '/stretnutie/' + stretnutie)
-          .on("value", (UserData) => {
-            if (UserData.val() != null) {
-              tmp.push(UserData.val());
-            }
+        let tmp = [];
+        firebase.database().ref('stretnutie/' + stretnutie + '/clenovia')
+          .on("child_added", (strUserData) => {
+            firebase.database().ref('users/' + strUserData.key + '/stretnutie/' + stretnutie)
+              .on("value", (UserData) => {
+                if (UserData.val() != null) {
+                  tmp.push(UserData.val());
+                }
+              });
           });
-      });
-    if(tmp.length > 1){
-      firebase.database().ref('users/' + this.userUID + '/stretnutie/' + stretnutie)
-        .remove();
-      this.resolveStr();
-      this.stretnutieBoolean = false;
-      this.homeBoolean = true;
-    } else {
-      firebase.database().ref('stretnutie/' + stretnutie)
-        .remove();
-      firebase.database().ref('users/' + this.userUID + '/stretnutie/' + stretnutie)
-        .remove();
-      this.resolveStr();
-      this.stretnutieBoolean = false;
-      this.homeBoolean = true;
-    }
+        if (tmp.length > 1) {
+          firebase.database().ref('users/' + this.userUID + '/stretnutie/' + stretnutie)
+            .remove();
+          this.resolveStr();
+          this.stretnutieBoolean = false;
+          this.homeBoolean = true;
+        } else {
+          firebase.database().ref('stretnutie/' + stretnutie)
+            .remove();
+          firebase.database().ref('users/' + this.userUID + '/stretnutie/' + stretnutie)
+            .remove();
+          this.resolveStr();
+          this.stretnutieBoolean = false;
+          this.homeBoolean = true;
+        }
   }
 
   finalnyDatum(stretnutie){
@@ -763,20 +907,20 @@ export class HomeComponent implements OnInit {
   }
 
   potvrditUcast(stretnutie) {
-    firebase.database().ref('stretnutie/' + stretnutie + '/ucast')
-      .update({
-        [this.userUID]: 'true'
-      });
-    this.potvrdenaUcast = true;
-    this.naplnClenovStretnutia(stretnutie);
-  }
+        firebase.database().ref('stretnutie/' + stretnutie + '/ucast')
+          .update({
+            [this.userUID]: 'true'
+          });
+        this.potvrdenaUcast = true;
+        this.naplnClenovStretnutia(stretnutie);
+      }
+
 
 
   back3() {
-    this.stretnutieBoolean = false;
-    this.homeBoolean = true;
-  }
-
+        this.stretnutieBoolean = false;
+        this.homeBoolean = true;
+      }
   finalnyDatum2(){
     this.userUID = JSON.parse(localStorage.getItem('user')).uid;
     firebase.database().ref('stretnutie')
@@ -887,6 +1031,98 @@ export class HomeComponent implements OnInit {
           }
         }
       });
+  }
+
+  overVyhodenie(){
+    let OrgID = JSON.parse(localStorage.getItem('org')).uid;
+    let UserID = JSON.parse(localStorage.getItem('user')).uid;
+    this.somVyhodeny = false;
+    this.organizaciaZrusena = false;
+    let tmp = [];
+    let tmp2 = [];
+    this.naplnAllPeople(OrgID);
+    firebase.database().ref('users/' + UserID)
+      .once("value", (userData)=> {
+        let user = userData.val();
+        user.uid = UserID;
+        localStorage.removeItem('user');
+        localStorage.setItem('user', JSON.stringify(user));
+      });
+    firebase.database().ref('organizacie/' + OrgID + '/clenovia')
+      .on('child_added', (userData) => {
+        tmp2.push(userData.key);
+        if (userData.key == UserID){
+          tmp.push(userData.key);
+        }
+      });
+    console.log(tmp.length);
+    console.log(this.pocetClenovOrg);
+
+    if (tmp.length == 0 && this.pocetClenovOrg == 0){
+      this.organizaciaZrusena = true;
+      this.organizaciaBooelean = false;
+      this.zmenUdajeBoolean = false;
+      this.upravUzivatelovBoolean = false;
+      this.pozriUzivatela = false;
+      localStorage.removeItem('org');
+    } else if (tmp.length == 0 && this.pocetClenovOrg != 0){
+      this.somVyhodeny = true;
+      this.organizaciaBooelean = false;
+      this.zmenUdajeBoolean = false;
+      this.upravUzivatelovBoolean = false;
+      this.pozriUzivatela = false;
+      localStorage.removeItem('org');
+    }
+  }
+
+  overVyhodenie2(){
+    let OrgID = JSON.parse(localStorage.getItem('org')).uid;
+    let UserID = JSON.parse(localStorage.getItem('user')).uid;
+    this.somVyhodeny = false;
+    let tmp = [];
+    let tmp2 = [];
+    this.naplnAllPeople(OrgID);
+    firebase.database().ref('users/' + UserID)
+      .once("value", (userData)=> {
+        let user = userData.val();
+        user.uid = UserID;
+        localStorage.removeItem('user');
+        localStorage.setItem('user', JSON.stringify(user));
+      });
+    firebase.database().ref('organizacie/' + OrgID + '/clenovia')
+      .on('child_added', (userData) => {
+        tmp2.push(userData.key);
+        if (userData.key == UserID){
+          tmp.push(userData.key);
+        }
+      });
+    console.log(tmp.length);
+
+    if (tmp.length == 1 && this.pocetClenovOrg != 0){
+      this.somVyhodeny = true;
+      this.organizaciaBooelean = false;
+      this.zmenUdajeBoolean = false;
+      this.upravUzivatelovBoolean = false;
+      this.pozriUzivatela = false;
+      localStorage.removeItem('org');
+    }
+  }
+  back6(){
+    this.somVyhodeny = false;
+    this.organizaciaZrusena = false;
+    this.homeBoolean = true;
+    this.resolveOrg();
+    this.resolveStr();
+  }
+
+  profil2(person) {
+        this.pozriUzivatelaStr = true;
+        this.stretnutieBoolean = false;
+        this.udajeOsoba = person;
+  }
+  vratSa2() {
+        this.pozriUzivatelaStr = false;
+        this.stretnutieBoolean = true;
   }
 
 

@@ -1,4 +1,4 @@
-<div *ngIf="!pridajStretnutieBoolean && !stretnutieBoolean && !hlasovanie && !pozretieHlasovania" class="stretnutie-page">
+<div *ngIf="!pridajStretnutieBoolean && !stretnutieBoolean && !hlasovanie && !pozretieHlasovania && !somVyhodeny" class="stretnutie-page">
   <table class="tabulka-stretnutie">
     <tr>
       <th colspan="2">Stretnutia o ktorých sa hlasuje</th>
@@ -18,19 +18,18 @@
 
   <table class="tabulka-udaje">
     <tr>
-      <th> <label for="nazovStretnutia" id="nazovStretnutia" class="bold">Názov stretnutia :</label></th>
+      <th> <label for="nazovStretnutia" id="nazovStretnutia" class="bold">Názov stretnutia:</label></th>
       <td>  <label for="nazovStretnutia">{{udajeStr.nazovStretnutia}}  </label></td>
     </tr>
     <tr>
-      <th> <label for="miestoStretnutia" id="miestoStretnutia"class="bold">Miesto stretnutia :</label></th>
+      <th> <label for="miestoStretnutia" id="miestoStretnutia"class="bold">Miesto stretnutia:</label></th>
       <td> <label for="miestoStretnutia">{{udajeStr.miestoStretnutia}}  </label></td>
     </tr>
-    <tr>
-      <th><label for="popisStretnutia" id="popisStretnutia" class="bold">Popis stretnutia :</label></th>
-      <td> <label for="popisStretnutia">{{udajeStr.popisStretnutia}} </label></td>
-    </tr>
   </table>
-
+  <div class="popis">
+  <p>Popis stretnutia:</p>
+    <textarea disabled rows="10" cols="45" for="popisStretnutia">{{udajeStr.popisStretnutia}}  </textarea>
+  </div>
   <div class="strClenovia" >
     <div class = "table-wrapper-scroll-y my-custom-scrollbar">
       <table class="pozvaní">
@@ -179,14 +178,14 @@
             </td>
           </tr>
         </table>
-        <div *ngIf="hodinaPlusOdUkoncenia" >
-          <p>Ukončenie hlasovania musí byť minimálne o hodinu</p>
+        <div class="error" *ngIf="hodinaPlusOdUkoncenia" >
+          <p>Minimálne hodina od ukončenia</p>
         </div>
       </div>
 
 
       <input type="submit" value="Ulož">
-      <div class="error" *ngIf="chybaTerminUzavretiaBoolean" >
+      <div class="error" *ngIf="chybaTerminUzavretiaBoolean && !hodinaPlus" >
         <p>Chýba termín uzavretia stretnutia</p>
       </div>
       <div class="error" *ngIf="chybaTerminStretnutia" >
@@ -204,3 +203,16 @@
   </div>
 </div>
 
+<div *ngIf="somVyhodeny"  class="vyhodenie-page">
+  <div class="form">
+    <p>Bol si vylúčený z organizácie</p>
+    <button (click)="back6()">Back</button>
+  </div>
+</div>
+
+<div *ngIf="organizaciaZrusena"  class="vyhodenie-page">
+  <div class="form">
+    <p>Organizácia bola zrušená</p>
+    <button (click)="back6()">Back</button>
+  </div>
+</div>

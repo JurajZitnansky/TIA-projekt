@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {NgForm} from "@angular/forms";
+import {FormControl, NgForm, Validators} from '@angular/forms';
 import * as firebase from 'firebase';
 import {Router} from "@angular/router";
 
@@ -12,26 +12,52 @@ export class SignupComponent implements OnInit {
   nazovUserBoolean: boolean;
   userRegistered: boolean;
   zlyEmail: boolean;
+  zleHeslo: boolean;
+  prazdnyLogin: boolean;
   constructor(private router : Router) {
     this.userRegistered = false;
     this.zlyEmail = false;
     this.nazovUserBoolean = false;
+    this.zleHeslo = false;
+    this.prazdnyLogin = false;
   }
 
   ngOnInit() {
   }
+
   register(f : NgForm) {
     this.zlyEmail = false;
+    this.zleHeslo = false;
     this.nazovUserBoolean = false;
+    this.prazdnyLogin = false;
+    const control = new FormControl(f.value.mail, Validators.pattern('^[a-zA-Z0-9\\._]{6,30}@[a-zA-Z0-9\\._]{1,}\\.[a-z]{2,}$'));
+    //console.log(control.errors);
+
+    if((control.errors != null) || (f.value.mail === '')){
+      this.zlyEmail = true;
+    }
+
+    const control2 = new FormControl(f.value.heslo, Validators.pattern('^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$'));
+    //console.log(control2.errors);
+    if((control2.errors != null) || (f.value.heslo === '')){
+      this.zleHeslo = true;
+    }
+
+
     let regUsernames = [];
     firebase.database().ref('users')
       .on('child_added', (userDataHelp) => {
         regUsernames.push(userDataHelp.val().name);
       });
-    if (regUsernames.includes(f.value.login) ===true) {
+    if(regUsernames.includes(f.value.login)){
       this.nazovUserBoolean = true;
-      console.log(regUsernames.includes(f.value.login));
-    } else {
+    }
+
+    if(f.value.login == ''){
+      this.prazdnyLogin = true;
+    }
+
+    if (this.zleHeslo == false && this.zlyEmail == false && this.nazovUserBoolean == false && this.prazdnyLogin == false) {
       firebase.auth().createUserWithEmailAndPassword(f.value.mail, f.value.heslo)
         .then((userDataSnapshot) => {
           let user = {
@@ -53,7 +79,6 @@ export class SignupComponent implements OnInit {
         })
         .catch((error) => {
           console.log("error", error.message);
-            this.zlyEmail = true;
         })
     }
   }

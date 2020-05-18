@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
           .once("value", (userData)=>{
             let user = userData.val();
             user.uid = userDataSnapshot.user.uid;
-            console.log(user);
+           // console.log(user);
             localStorage.setItem('user', JSON.stringify(user));
             this.router.navigate(['home',])
           })
